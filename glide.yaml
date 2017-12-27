@@ -1,0 +1,4 @@
+package: github.com/shiruitao/go-one
+import:
+- package: github.com/astaxie/beego
+  version: v1.9.2
