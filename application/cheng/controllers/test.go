@@ -13,3 +13,6 @@ func (o *Test) Helloworld() {
 	o.Data["json"] = map[string]string{"content": models.Helloworld("shiruitao")}
 	o.ServeJSON()
 }
+func (add *Test) Add() {
+	add.Data["json"] = models.Add(3, 5)
+}

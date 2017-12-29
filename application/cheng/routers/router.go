@@ -15,4 +15,5 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.Test{}, "get:Helloworld")
+	beego.Router("/add", &controllers.Test{}, "get:Add")
 }
