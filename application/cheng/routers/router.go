@@ -14,18 +14,5 @@ import (
 )
 
 func init() {
-	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object", // 注解路由
-			beego.NSInclude(
-				&controllers.ObjectController{},
-			),
-		),
-		beego.NSNamespace("/user",
-			beego.NSInclude(
-				&controllers.UserController{},
-			),
-		),
-	)
-	// 注册 namespace
-	beego.AddNamespace(ns)
+	beego.Router("/", &controllers.Test{}, "get:Helloworld")
 }
