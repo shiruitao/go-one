@@ -31,7 +31,7 @@ func init() {
 func (insert *MessageServiceProvider) Insert() (int64, error) {
 	o := orm.NewOrm() // 创建一个 Ormer
 	// NewOrm 的同时会执行 orm.BootStrap (整个 app 只执行一次)，用以验证模型之间的定义并缓存。
-	o.Using("blog") // 默认使用 default，你可以指定为其他数据库
+	// o.Using("blog") // 默认使用 default，你可以指定为其他数据库
 	message := new(Message)
 	message.Title = "my first bolg"
 	message.Content = "默认使用 default，你可以指定为其他数据库"
@@ -42,12 +42,13 @@ func (insert *MessageServiceProvider) Insert() (int64, error) {
 
 	return id, err
 }
-func (read *MessageServiceProvider) Read() error {
+func (read *MessageServiceProvider) Read(id int) error {
 	o := orm.NewOrm()
-	message := Message{Id: 1000}
-	
+	message := Message{Id: id}
+	fmt.Println("输出结果:", message)
 	err := o.Read(&message)
-	
+	fmt.Println("err", err)
+	fmt.Println("err:", err)
 	if err == orm.ErrNoRows {
 		fmt.Println("查询不到")
 	} else if err == orm.ErrMissPK {
@@ -56,4 +57,25 @@ func (read *MessageServiceProvider) Read() error {
 		fmt.Println(message.Id, message.Title)
 	}
 	return err
+}
+func (del *MessageServiceProvider) Delete(id int) (int64, error) {
+	fmt.Println("model中:", id)
+	o := orm.NewOrm()
+	num, err := o.Delete(&Message{Id: id})
+	if err == nil {
+		fmt.Println(num)
+	}
+	return num, err
+}
+func (del *MessageServiceProvider) Update(id int) {
+	o := orm.NewOrm()
+	message := Message{Id: id}
+	if o.Read(&message) == nil {
+		message.Title = "MyName"
+		if num, err := o.Update(&message); err == nil {
+			fmt.Println(num)
+		}
+	} else {
+		fmt.Println("Id:", id, "不存在")
+	}
 }

@@ -1,0 +1,14 @@
+package: github.com/shiruitao/go-one/application/cheng
+import:
+- package: github.com/astaxie/beego
+  version: ^1.9.2
+  subpackages:
+  - context/param
+  - orm
+- package: github.com/go-sql-driver/mysql
+  version: ^1.3.0
+testImport:
+- package: github.com/smartystreets/goconvey
+  version: ^1.6.3
+  subpackages:
+  - convey

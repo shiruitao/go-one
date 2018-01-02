@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"encoding/json"
 	"github.com/astaxie/beego"
+	// "github.com/astaxie/beego/logs"
 	"github.com/shiruitao/go-one/application/cheng/models"
 	"fmt"
 )
@@ -9,14 +11,6 @@ import (
 // Operations about object
 type Test struct {
 	beego.Controller
-}
-
-func (o *Test) Helloworld() {
-	o.Data["json"] = map[string]string{"content": models.Helloworld("shiruitao")}
-	o.ServeJSON()
-}
-func (add *Test) Add() {
-	add.Data["json"] = models.Add(3, 5)
 }
 
 func (t *Test) Insert() {
@@ -32,11 +26,42 @@ finish:
 }
 
 func (t *Test) Read() {
-	err := models.MessageService.Read()
+	err := models.MessageService.Read(1004)
 	if err != nil {
 		t.Data["json"] = map[string]interface{}{"content": err}
 		goto finish
 	}
-finish:
+	finish:
 	t.ServeJSON()
+}
+
+func (this *Test) Delete() {
+	var (
+		num int64
+		id struct {
+			Id int `json:"id"`
+		}
+	)
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		fmt.Println("controller中:", this.Ctx.Input.RequestBody)
+		fmt.Println("err:", err)
+		this.Data["json"] = map[string]interface{}{"content": err}
+		goto finish
+	}
+	
+	num, err = models.MessageService.Delete(id.Id)
+	fmt.Println("controller中2:", id.Id)
+	if err != nil {
+		this.Data["json"] = map[string]interface{}{"content": err, "num": num}
+		goto finish
+	} else {
+		this.Data["json"] = map[string]interface{}{"执行行数": num}
+	}
+	finish:
+	this.ServeJSON()
+}
+
+func (t *Test) Update() {
+	models.MessageService.Update(1001)
 }

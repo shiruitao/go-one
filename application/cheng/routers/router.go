@@ -14,8 +14,8 @@ import (
 )
 
 func init() {
-	beego.Router("/", &controllers.Test{}, "get:Helloworld")
-	beego.Router("/add", &controllers.Test{}, "get:Add")
-	beego.Router("/insert", &controllers.Test{}, "get:Insert")
+	beego.Router("/insert", &controllers.Test{}, "post:Insert")
 	beego.Router("/read", &controllers.Test{}, "get:Read")
+	beego.Router("/delete", &controllers.Test{}, "post:Delete")
+	beego.Router("/update", &controllers.Test{}, "get:Update")
 }
