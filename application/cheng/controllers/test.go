@@ -14,7 +14,9 @@ type Test struct {
 }
 
 func (t *Test) Insert() {
-	id, err := models.MessageService.Insert()
+	var Content models.Message
+	err := json.Unmarshal(t.Ctx.Input.RequestBody, &Content)
+	id, err := models.MessageService.Insert(Content)
 	fmt.Println(id, err)
 	if err != nil {
 		t.Data["json"] = map[string]interface{}{"content": err}
