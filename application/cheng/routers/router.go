@@ -18,4 +18,5 @@ func init() {
 	beego.Router("/read", &controllers.Test{}, "get:Read")
 	beego.Router("/delete", &controllers.Test{}, "post:Delete")
 	beego.Router("/update", &controllers.Test{}, "get:Update")
+	beego.Router("/readLabel", &controllers.Test{}, "post:ReadLabel")
 }

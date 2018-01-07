@@ -13,6 +13,8 @@ type Message struct {
 	Id      int
 	Title   string
 	Content string
+	State   int
+	Label   string
 }
 // 注册模型
 func init() {
@@ -43,10 +45,40 @@ func (read *MessageServiceProvider) Read(id int) error {
 	} else if err == orm.ErrMissPK {
 		fmt.Println("找不到主键")
 	} else {
+		fmt.Println(message)
+	}
+	return err
+}
+
+func (read *MessageServiceProvider) ReadLabel(label string) Message{
+	o := orm.NewOrm()
+	var messages Message
+	num, err := o.Raw("SELECT * FROM message where label = ?", label).QueryRows(&messages)
+	if err == nil {
+		fmt.Println("user nums: ", num)
+		fmt.Println("user nums: ", messages)
+	}
+	return messages
+}
+
+
+func (read *MessageServiceProvider) Read_title_content(label string) error {
+	o := orm.NewOrm()
+	message := Message{Label: label}
+	fmt.Println("输出结果:", message)
+	err := o.Read(&message)
+	fmt.Println("err", err)
+	fmt.Println("err:", err)
+	if err == orm.ErrNoRows {
+		fmt.Println("查询不到")
+	} else if err == orm.ErrMissPK {
+		fmt.Println("找不到主键")
+	} else {
 		fmt.Println(message.Id, message.Title)
 	}
 	return err
 }
+
 func (del *MessageServiceProvider) Delete(id int) (int64, error) {
 	fmt.Println("model中:", id)
 	o := orm.NewOrm()
@@ -56,7 +88,7 @@ func (del *MessageServiceProvider) Delete(id int) (int64, error) {
 	}
 	return num, err
 }
-func (del *MessageServiceProvider) Update(id int) {
+func (up *MessageServiceProvider) Update(id int) {
 	o := orm.NewOrm()
 	message := Message{Id: id}
 	if o.Read(&message) == nil {

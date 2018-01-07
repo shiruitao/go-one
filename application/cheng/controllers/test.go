@@ -16,10 +16,13 @@ type Test struct {
 func (t *Test) Insert() {
 	var Content models.Message
 	err := json.Unmarshal(t.Ctx.Input.RequestBody, &Content)
-	id, err := models.MessageService.Insert(Content)
-	fmt.Println(id, err)
 	if err != nil {
 		t.Data["json"] = map[string]interface{}{"content": err}
+	}
+	id, err1 := models.MessageService.Insert(Content)
+	fmt.Println(id, err1)
+	if err1 != nil {
+		t.Data["json"] = map[string]interface{}{"content1": err1}
 		goto finish
 	}
 	t.Data["json"] = map[string]interface{}{"id": id}
@@ -28,13 +31,27 @@ finish:
 }
 
 func (t *Test) Read() {
-	err := models.MessageService.Read(1004)
+	err := models.MessageService.Read(1003)
 	if err != nil {
 		t.Data["json"] = map[string]interface{}{"content": err}
 		goto finish
 	}
 	finish:
 	t.ServeJSON()
+}
+
+func (t *Test) ReadLabel() {
+	var label struct {
+		Label string `json:"label"`
+	}
+	err := json.Unmarshal(t.Ctx.Input.RequestBody, &label)
+	fmt.Println("controllers:", t.Ctx.Input.RequestBody)
+	if err != nil {
+		t.Data["json"] = map[string]interface{}{"content": err}
+	}
+	fmt.Println("controllers-label", label.Label)
+	list := models.MessageService.ReadLabel(label.Label)
+	t.Data["json"] = map[string]interface{}{"content": list}
 }
 
 func (this *Test) Delete() {
