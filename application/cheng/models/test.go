@@ -3,6 +3,7 @@ package models
 import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
+	"github.com/shiruitao/go-one/application/cheng/log"
 )
 
 type MessageServiceProvider struct{}
@@ -10,12 +11,13 @@ type MessageServiceProvider struct{}
 var MessageService *MessageServiceProvider
 
 type Message struct {
-	Id      int
-	Title   string
-	Content string
-	State   int
-	Label   string
+	Id      int    `orm:"column(id)"`
+	Title   string `orm:"column(title)"`
+	Content string `orm:"column(content)"`
+	State   int    `orm:"column(state)"`
+	Label   string `orm:"column(label)"`
 }
+
 // 注册模型
 func init() {
 	orm.RegisterModel(new(Message))
@@ -23,6 +25,7 @@ func init() {
 
 func (insert *MessageServiceProvider) Insert(content Message) (int64, error) {
 	fmt.Println("model中", content)
+	content.State = 1
 	o := orm.NewOrm() // 创建一个 Ormer
 	// NewOrm 的同时会执行 orm.BootStrap (整个 app 只执行一次)，用以验证模型之间的定义并缓存。
 	// o.Using("blog") // 默认使用 default，你可以指定为其他数据库
@@ -33,61 +36,49 @@ func (insert *MessageServiceProvider) Insert(content Message) (int64, error) {
 	return id, err
 }
 
-func (read *MessageServiceProvider) Read(id int) error {
-	o := orm.NewOrm()
-	message := Message{Id: id}
-	fmt.Println("输出结果:", message)
-	err := o.Read(&message)
-	fmt.Println("err", err)
-	fmt.Println("err:", err)
-	if err == orm.ErrNoRows {
-		fmt.Println("查询不到")
-	} else if err == orm.ErrMissPK {
-		fmt.Println("找不到主键")
-	} else {
-		fmt.Println(message)
-	}
-	return err
-}
 
-func (read *MessageServiceProvider) ReadLabel(label string) Message{
+func (readLabel *MessageServiceProvider) ReadLabel(label string) []Message {
 	o := orm.NewOrm()
-	var messages Message
-	num, err := o.Raw("SELECT * FROM message where label = ?", label).QueryRows(&messages)
+	var messages []Message
+	num, err := o.Raw("SELECT * FROM message where label = ? and state = 1", label).QueryRows(&messages)
 	if err == nil {
-		fmt.Println("user nums: ", num)
-		fmt.Println("user nums: ", messages)
+		fmt.Println("message content: ", messages, num)
 	}
 	return messages
 }
 
-
-func (read *MessageServiceProvider) Read_title_content(label string) error {
+func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) ([]*Message, int64) {
+	var message []*Message
 	o := orm.NewOrm()
-	message := Message{Label: label}
-	fmt.Println("输出结果:", message)
-	err := o.Read(&message)
-	fmt.Println("err", err)
-	fmt.Println("err:", err)
-	if err == orm.ErrNoRows {
-		fmt.Println("查询不到")
-	} else if err == orm.ErrMissPK {
-		fmt.Println("找不到主键")
-	} else {
-		fmt.Println(message.Id, message.Title)
+	qs := o.QueryTable("message")
+	num, err := qs.Filter("title__icontains", title).All(&message)
+	if err != nil {
+		log.Logger.Error("qs.Filter:", err)
 	}
-	return err
+	return message, num
 }
 
 func (del *MessageServiceProvider) Delete(id int) (int64, error) {
-	fmt.Println("model中:", id)
 	o := orm.NewOrm()
-	num, err := o.Delete(&Message{Id: id})
-	if err == nil {
-		fmt.Println(num)
+	res, err := o.Raw("UPDATE message SET state = 0 WHERE id = ?", id).Exec()
+	num, _ := res.RowsAffected()
+	if err != nil {
+		log.Logger.Error("Delete:", err)
+	}
+	return num, err
+
+}
+
+func (delTest *MessageServiceProvider) DeleteTest(id int) (int64, error) {
+	o := orm.NewOrm()
+	res, err := o.Raw("DELETE from message WHERE id = ?", id).Exec()
+	num, _ := res.RowsAffected()
+	if err != nil {
+		log.Logger.Error("Delete:", err)
 	}
 	return num, err
 }
+
 func (up *MessageServiceProvider) Update(id int) {
 	o := orm.NewOrm()
 	message := Message{Id: id}
