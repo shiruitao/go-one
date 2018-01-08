@@ -1,9 +1,38 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2018 SmartestEE Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+/*
+ * Revision History:
+ *     Initial: 2018/01/02        Shi Ruitao
+ */
 package models
 
 import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/cheng/log"
+	//"time"
 )
 
 type MessageServiceProvider struct{}
@@ -47,16 +76,23 @@ func (readLabel *MessageServiceProvider) ReadLabel(label string) []Message {
 	return messages
 }
 
-func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) ([]*Message, int64) {
-	var message []*Message
+func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) ([]Message, int64) {
 	o := orm.NewOrm()
-	qs := o.QueryTable("message")
-	num, err := qs.Filter("title__icontains", title).All(&message)
+	var messages []Message
+	title = "%" + title + "%"
+	num, err := o.Raw("SELECT * FROM message where title like ? or content like ? and state = 1", title, title ).QueryRows(&messages)
 	if err != nil {
 		log.Logger.Error("qs.Filter:", err)
 	}
-	return message, num
+	return messages, num
 }
+
+//func (readTime *MessageServiceProvider) ReadTime(time time.Time) {
+//	o := orm.NewOrm()
+//	time = time + "%"
+//	var message []Message
+//	num, err := o.Raw()
+//}
 
 func (del *MessageServiceProvider) Delete(id int) (int64, error) {
 	o := orm.NewOrm()
@@ -77,17 +113,4 @@ func (delTest *MessageServiceProvider) DeleteTest(id int) (int64, error) {
 		log.Logger.Error("Delete:", err)
 	}
 	return num, err
-}
-
-func (up *MessageServiceProvider) Update(id int) {
-	o := orm.NewOrm()
-	message := Message{Id: id}
-	if o.Read(&message) == nil {
-		message.Title = "MyName"
-		if num, err := o.Update(&message); err == nil {
-			fmt.Println(num)
-		}
-	} else {
-		fmt.Println("Id:", id, "不存在")
-	}
 }

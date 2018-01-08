@@ -1,3 +1,32 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2018 SmartestEE Inc.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+/*
+ * Revision History:
+ *     Initial: 2018/01/02        Shi Ruitao
+ */
+
 package controllers
 
 import (
@@ -45,17 +74,21 @@ func (t *Test) ReadLabel() {
 	t.ServeJSON()
 }
 
-var Mess struct {
-	Title string `json:"title"`
-	Content string `json:"content"`
-}
+
 func (t *Test) ReadTitleContent() {
-	fmt.Println("123456")
-	//err := json.Unmarshal(t.Ctx.Input.RequestBody, &Mess)
-	//if err != nil {
-	//	log.Logger.Error("json.Unmarshal:", err)
-	//}
-	models.MessageService.ReadTitleContent("JavaScript")
+	var Mess struct {
+		Title string `json:"title"`
+	}
+	err := json.Unmarshal(t.Ctx.Input.RequestBody, &Mess)
+	if err != nil {
+		log.Logger.Error("json.Unmarshal:", err)
+	}
+	message, num :=models.MessageService.ReadTitleContent(Mess.Title)
+	t.Data["json"] = map[string]interface{}{"content:": message}
+	if num == 0 {
+		t.Data["json"] = map[string]string{"content:": "未找到"}
+	}
+	fmt.Println("执行数:",num)
 	t.ServeJSON()
 }
 
@@ -106,8 +139,4 @@ func (this *Test) DeleteTest() {
 	}
 	this.Data["json"] = map[string]interface{}{"执行数": num}
 	this.ServeJSON()
-}
-
-func (t *Test) Update() {
-	models.MessageService.Update(1001)
 }
