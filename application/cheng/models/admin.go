@@ -31,7 +31,6 @@ package models
 
 import (
 	"github.com/astaxie/beego/orm"
-	//"github.com/shiruitao/go-one/application/cheng/logs"
 	"github.com/shiruitao/go-one/application/cheng/utility"
 )
 
@@ -73,4 +72,20 @@ func (login *AdminServiceProvider) Login(name, password string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+func (change *AdminServiceProvider) ChangePass(name, newpassword string) error {
+	o := orm.NewOrm()
+	hash, err := utility.GenerateHash(newpassword)
+	if err != nil {
+		return err
+	} else {
+		password := string(hash)
+		sql := "UPDATE blog.admin SET password = ? WHERE name = ? LIMIT 1"
+		values := []interface{}{password, name}
+		raw := o.Raw(sql, values)
+		_ , err := raw.Exec()
+
+		return err
+	}
 }

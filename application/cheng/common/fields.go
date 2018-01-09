@@ -2,7 +2,8 @@ package common
 
 const (
 	// Session
-	SessionAdminID = "userId"
+	SessionAdminID = "adminId"
+	SessionAdminName = "adminName"
 	// Resp
 	RespKeyStatus = "status"
 )
