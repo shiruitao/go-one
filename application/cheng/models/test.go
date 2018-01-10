@@ -32,7 +32,6 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/cheng/log"
-	//"time"
 )
 
 type MessageServiceProvider struct{}
@@ -69,18 +68,40 @@ func (insert *MessageServiceProvider) Insert(content Message) (int64, error) {
 func (readLabel *MessageServiceProvider) ReadLabel(label string) []Message {
 	o := orm.NewOrm()
 	var messages []Message
-	num, err := o.Raw("SELECT * FROM message where label = ? and state = 1", label).QueryRows(&messages)
+	num, err := o.Raw("SELECT * FROM message WHERE label = ? AND state = 1", label).QueryRows(&messages)
 	if err == nil {
 		fmt.Println("message content: ", messages, num)
 	}
 	return messages
 }
+// 大小写问题 ---------------------------------
+//func regexp(s string) string {
+//	var a string
+//	capital := make([]string,len(s))
+//	lower := make([]string,len(s))
+//	for i,v:= range s {
+//		lower[i]=strings.ToLower(string(v))
+//		capital[i]=strings.ToUpper(string(v))
+//	}
+//
+//	for i := 0; i < len(s); i++ {
+//		b := fmt.Sprintf("[%s,%s]",lower[i],capital[i])
+//		a = a+b
+//	}
+//
+//	return a
+//}
+// ----------------------------------------------
 
-func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) ([]Message, int64) {
+func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) ([]*Message, int64) {
 	o := orm.NewOrm()
-	var messages []Message
-	title = "%" + title + "%"
-	num, err := o.Raw("SELECT * FROM message where title like ? or content like ? and state = 1", title, title ).QueryRows(&messages)
+	var messages []*Message
+
+	cond := orm.NewCondition()
+	cond1 := cond.And("title__icontains", title).Or("content__icontains", title).And("state__exact", 1)
+	qs := o.QueryTable("message")
+	num, err := qs.SetCond(cond1).All(&messages)
+	//num, err := o.Raw("SELECT * FROM message WHERE title regexp ? OR content regexp ? AND state = 1", title, title).QueryRows(&messages)
 	if err != nil {
 		log.Logger.Error("qs.Filter:", err)
 	}
@@ -107,7 +128,7 @@ func (del *MessageServiceProvider) Delete(id int) (int64, error) {
 
 func (delTest *MessageServiceProvider) DeleteTest(id int) (int64, error) {
 	o := orm.NewOrm()
-	res, err := o.Raw("DELETE from message WHERE id = ?", id).Exec()
+	res, err := o.Raw("DELETE FROM message WHERE id = ?", id).Exec()
 	num, _ := res.RowsAffected()
 	if err != nil {
 		log.Logger.Error("Delete:", err)
