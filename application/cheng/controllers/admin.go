@@ -30,12 +30,13 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego"
-	"github.com/shiruitao/go-one/application/cheng/models"
 	"encoding/json"
-	"github.com/shiruitao/go-one/application/cheng/log"
+	"fmt"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/cheng/common"
+	"github.com/shiruitao/go-one/application/cheng/log"
+	"github.com/shiruitao/go-one/application/cheng/models"
 )
 
 type AdminController struct {
@@ -45,6 +46,7 @@ type AdminController struct {
 // 管理注册
 func (this *AdminController) Create() {
 	var admin models.Admin
+	fmt.Printf("\n%v\n", this.Ctx.Input.RequestBody)
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &admin)
 	if err != nil {
 		log.Logger.Error("json.Unmarshal", err)
@@ -52,9 +54,9 @@ func (this *AdminController) Create() {
 		err := models.AdminService.Create(admin)
 		if err != nil {
 			log.Logger.Error("models.Insert", err)
-			this.Data["json"] = map[string]interface{}{"data": "false"}
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 		} else {
-			this.Data["json"] = map[string]interface{}{"data": "true"}
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
 		}
 	}
 	this.ServeJSON()
@@ -70,11 +72,11 @@ func (this *AdminController) Login() {
 	} else {
 		flag, err := models.AdminService.Login(admin.Name, admin.Password)
 		if err != nil {
-			if err == orm.ErrNoRows{
-				log.Logger.Debug("Invalid name!")
+			if err == orm.ErrNoRows {
+				log.Logger.Warn("Invalid name!")
 				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidUser}
 			} else {
-				log.Logger.Error("出错", err)
+				log.Logger.Error("error", err)
 				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 			}
 		} else {
@@ -91,7 +93,7 @@ func (this *AdminController) Login() {
 }
 
 // 根据name修改管理密码
-func (this *AdminController) ChangePass () {
+func (this *AdminController) ChangePass() {
 	var admin struct {
 		Oldpass string
 		Newpass string
@@ -105,7 +107,7 @@ func (this *AdminController) ChangePass () {
 		flag, err := models.AdminService.Login(name.(string), admin.Oldpass)
 
 		if err != nil {
-			log.Logger.Error("旧密码:", err)
+			log.Logger.Error("Old Password:", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 		} else {
 			if !flag {

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/shiruitao/go-one/application/xu/models"
 	"encoding/json"
+	"github.com/shiruitao/go-one/application/xu/models"
 
 	"github.com/astaxie/beego"
 )
@@ -116,4 +116,3 @@ func (u *UserController) Logout() {
 	u.Data["json"] = "logout success"
 	u.ServeJSON()
 }
-

@@ -64,16 +64,33 @@ func (insert *MessageServiceProvider) Insert(content Message) (int64, error) {
 	return id, err
 }
 
+type M struct {
+	title   string
+	content string
+	label   string
+}
+
+func (readAll *MessageServiceProvider) ReadAll() ([]Message, error) {
+	var messages []Message
+	o := orm.NewOrm()
+	num, err := o.Raw("SELECT title, content, label FROM message").QueryRows(&messages)
+	if err == nil {
+		fmt.Println("cloumn:", num)
+	}
+	return messages, err
+}
 
 func (readLabel *MessageServiceProvider) ReadLabel(label string) []Message {
 	o := orm.NewOrm()
 	var messages []Message
-	num, err := o.Raw("SELECT * FROM message WHERE label = ? AND state = 1", label).QueryRows(&messages)
+	label = "%" + "%"
+	num, err := o.Raw("SELECT * FROM message WHERE label LIKE ? AND state = 1", label).QueryRows(&messages)
 	if err == nil {
 		fmt.Println("message content: ", messages, num)
 	}
 	return messages
 }
+
 // 大小写问题 ---------------------------------
 //func regexp(s string) string {
 //	var a string
@@ -97,11 +114,15 @@ func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) (
 	o := orm.NewOrm()
 	var messages []*Message
 
-	cond := orm.NewCondition()
-	cond1 := cond.And("title__icontains", title).Or("content__icontains", title).And("state__exact", 1)
-	qs := o.QueryTable("message")
-	num, err := qs.SetCond(cond1).All(&messages)
-	//num, err := o.Raw("SELECT * FROM message WHERE title regexp ? OR content regexp ? AND state = 1", title, title).QueryRows(&messages)
+	//cond := orm.NewCondition()
+	//cond1 := cond.Or("title__icontains", title).Or("content__icontains", title).And("state__exact", 1)
+	//qs := o.QueryTable("message")
+	//num, err := qs.SetCond(cond1).All(&messages)
+
+	//qs := o.QueryTable("message")
+	//num, err := qs.Filter("title__iexact", title).All(&messages)
+	title = "%" + title + "%"
+	num, err := o.Raw("SELECT * FROM message WHERE title LIKE ? OR content LIKE ? AND state = 1", title, title).QueryRows(&messages)
 	if err != nil {
 		log.Logger.Error("qs.Filter:", err)
 	}

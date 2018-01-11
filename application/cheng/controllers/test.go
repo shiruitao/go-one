@@ -35,7 +35,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/shiruitao/go-one/application/cheng/log"
 	"github.com/shiruitao/go-one/application/cheng/models"
-	//"github.com/astaxie/beego/orm"
 )
 
 // Operations about object
@@ -60,6 +59,16 @@ finish:
 	t.ServeJSON()
 }
 
+func (this *Test) ReadAll() {
+	list, err := models.MessageService.ReadAll()
+	if err != nil {
+		log.Logger.Error("ERROR:", err)
+	} else {
+		this.Data["json"] = map[string]interface{}{"data": list}
+	}
+	this.ServeJSON()
+}
+
 func (t *Test) ReadLabel() {
 	var label struct {
 		Label string `json:"label"`
@@ -74,7 +83,6 @@ func (t *Test) ReadLabel() {
 	t.ServeJSON()
 }
 
-
 func (t *Test) ReadTitleContent() {
 	var Mess struct {
 		Title string `json:"title"`
@@ -83,18 +91,19 @@ func (t *Test) ReadTitleContent() {
 	if err != nil {
 		log.Logger.Error("json.Unmarshal:", err)
 	}
-	message, num :=models.MessageService.ReadTitleContent(Mess.Title)
+	message, num := models.MessageService.ReadTitleContent(Mess.Title)
 	t.Data["json"] = map[string]interface{}{"content:": message}
 	if num == 0 {
-		t.Data["json"] = map[string]string{"content:": "未找到"}
+		t.Data["json"] = map[string]string{"content:": "not find"}
 	}
-	fmt.Println("执行数:",num)
+	fmt.Println("line:", num)
 	t.ServeJSON()
 }
 
 var Id struct {
 	Id []int `json:"id"`
 }
+
 func (this *Test) Delete() {
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &Id)
 	if err != nil {
@@ -107,14 +116,12 @@ func (this *Test) Delete() {
 	for i := 0; i < len(Id.Id); i++ {
 		num1, err1 := models.MessageService.Delete(Id.Id[i])
 		if err1 != nil || num1 != 1 {
-			fmt.Println("执行数", num1)
 			log.Logger.Error("models.MessageService.Delete:", err1)
 			break
 		}
 		num++
 	}
-	fmt.Println("执行", num, "行")
-	this.Data["json"] = map[string]interface{}{"执行数": num}
+	this.Data["json"] = map[string]interface{}{"line": num}
 	if err1 != nil {
 		log.Logger.Error("Delete(Id)", err1)
 		goto finish

@@ -41,7 +41,7 @@ var AdminService *AdminServiceProvider = &AdminServiceProvider{}
 
 type Admin struct {
 	Id       int16  `json:"id" orm:"pk"`
-	Name     string	`json:name`
+	Name     string `json:name`
 	Password string `json:"password" validate:"required,alphanum,min=6,max=30"`
 	State    int8   `json:"state"`
 }
@@ -84,7 +84,7 @@ func (change *AdminServiceProvider) ChangePass(name, newpassword string) error {
 		sql := "UPDATE blog.admin SET password = ? WHERE name = ? LIMIT 1"
 		values := []interface{}{password, name}
 		raw := o.Raw(sql, values)
-		_ , err := raw.Exec()
+		_, err := raw.Exec()
 
 		return err
 	}
