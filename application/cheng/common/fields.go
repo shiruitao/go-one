@@ -6,4 +6,5 @@ const (
 	SessionAdminName = "adminName"
 	// Resp
 	RespKeyStatus = "status"
+	RespKeyData   = "data"
 )

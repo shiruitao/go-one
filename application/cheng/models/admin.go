@@ -30,6 +30,7 @@
 package models
 
 import (
+	"errors"
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/cheng/utility"
 )
@@ -53,10 +54,14 @@ func init() {
 func (create *AdminServiceProvider) Create(content Admin) error {
 	content.State = 1
 	o := orm.NewOrm()
+	if len(content.Password) < 6 || len(content.Password) > 30 {
+		var e error = errors.New("password length error")
+		return e
+	}
 	hash, err := utility.GenerateHash(content.Password)
 	password := string(hash)
-	sql := "INSERT INTO blog.admin(name, password) VALUES (?,?)"
-	values := []interface{}{content.Name, password}
+	sql := "INSERT INTO blog.admin(name, password, state) VALUES (?, ?, ?)"
+	values := []interface{}{content.Name, password, content.State}
 	raw := o.Raw(sql, values)
 	_, err = raw.Exec()
 	return err

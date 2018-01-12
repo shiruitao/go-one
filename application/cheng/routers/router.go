@@ -53,6 +53,8 @@ func init() {
 	beego.Router("/readLabel", &controllers.Test{}, "post:ReadLabel")
 	// 根据标题和内容查询
 	beego.Router("/readTitleContent", &controllers.Test{}, "post:ReadTitleContent")
+	// 根据时间查询
+	beego.Router("/readTime", &controllers.Test{}, "post:ReadTime")
 	// 注册
 	beego.Router("/adminCreate", &controllers.AdminController{}, "post:Create")
 	// 登录

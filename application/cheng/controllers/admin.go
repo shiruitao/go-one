@@ -31,7 +31,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/cheng/common"
@@ -46,7 +45,6 @@ type AdminController struct {
 // 管理注册
 func (this *AdminController) Create() {
 	var admin models.Admin
-	fmt.Printf("\n%v\n", this.Ctx.Input.RequestBody)
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &admin)
 	if err != nil {
 		log.Logger.Error("json.Unmarshal", err)

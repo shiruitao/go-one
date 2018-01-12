@@ -33,6 +33,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/shiruitao/go-one/application/cheng/common"
 	"github.com/shiruitao/go-one/application/cheng/log"
 	"github.com/shiruitao/go-one/application/cheng/models"
 )
@@ -60,11 +61,12 @@ finish:
 }
 
 func (this *Test) ReadAll() {
-	list, err := models.MessageService.ReadAll()
+	list, num, err := models.MessageService.ReadAll()
 	if err != nil {
 		log.Logger.Error("ERROR:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 	} else {
-		this.Data["json"] = map[string]interface{}{"data": list}
+		this.Data["json"] = map[string]interface{}{"line": num, common.RespKeyData: list}
 	}
 	this.ServeJSON()
 }
@@ -74,30 +76,54 @@ func (t *Test) ReadLabel() {
 		Label string `json:"label"`
 	}
 	err := json.Unmarshal(t.Ctx.Input.RequestBody, &label)
-	fmt.Println("controllers:", t.Ctx.Input.RequestBody)
 	if err != nil {
 		log.Logger.Error("MessageService.Insert err %v:", err)
+	} else {
+		list, num, err:= models.MessageService.ReadLabel(label.Label)
+		if err != nil {
+			log.Logger.Error("Readlabel error:", err)
+		} else {
+			t.Data["json"] = map[string]interface{}{"line": num, common.RespKeyData: list}
+		}
 	}
-	list := models.MessageService.ReadLabel(label.Label)
-	t.Data["json"] = map[string]interface{}{"data": list}
 	t.ServeJSON()
 }
 
-func (t *Test) ReadTitleContent() {
+func (this *Test) ReadTitleContent() {
 	var Mess struct {
 		Title string `json:"title"`
 	}
-	err := json.Unmarshal(t.Ctx.Input.RequestBody, &Mess)
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &Mess)
 	if err != nil {
 		log.Logger.Error("json.Unmarshal:", err)
 	}
-	message, num := models.MessageService.ReadTitleContent(Mess.Title)
-	t.Data["json"] = map[string]interface{}{"content:": message}
-	if num == 0 {
-		t.Data["json"] = map[string]string{"content:": "not find"}
+	message, num ,err:= models.MessageService.ReadTitleContent(Mess.Title)
+	this.Data["json"] = map[string]interface{}{"content:": message}
+	if err != nil {
+		log.Logger.Error("ReadTitleContent error:", err)
+		this.Data["json"] = map[string]string{"content:": "not find"}
+	} else {
+		this.Data["json"] = map[string]interface{}{"line:": num, common.RespKeyData: message}
 	}
-	fmt.Println("line:", num)
-	t.ServeJSON()
+	this.ServeJSON()
+}
+
+func (this *Test) ReadTime() {
+	var created models.Message
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &created.Created)
+	if err != nil {
+		log.Logger.Error("time error", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: "time error"}
+	} else {
+		messages, num, err := models.MessageService.ReadTime(created.Created)
+		if err != nil {
+			log.Logger.Error("time read error", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+		} else {
+			this.Data["json"] = map[string]interface{}{"line": num, common.RespKeyData: messages}
+		}
+	}
+	this.ServeJSON()
 }
 
 var Id struct {
@@ -108,25 +134,24 @@ func (this *Test) Delete() {
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &Id)
 	if err != nil {
 		log.Logger.Error("json.Unmarshal:", err)
-	}
-	var (
-		num  int64
-		err1 error
-	)
-	for i := 0; i < len(Id.Id); i++ {
-		num1, err1 := models.MessageService.Delete(Id.Id[i])
-		if err1 != nil || num1 != 1 {
-			log.Logger.Error("models.MessageService.Delete:", err1)
-			break
+	} else {
+		var (
+			num  int64
+			err1 error
+		)
+		for i := 0; i < len(Id.Id); i++ {
+			err1 := models.MessageService.Delete(Id.Id[i])
+			if err1 != nil {
+				log.Logger.Error("models.MessageService.Delete:", err1)
+				break
+			}
+			num++
 		}
-		num++
+		this.Data["json"] = map[string]interface{}{"line": num}
+		if err1 != nil {
+			log.Logger.Error("Delete(Id)", err1)
+		}
 	}
-	this.Data["json"] = map[string]interface{}{"line": num}
-	if err1 != nil {
-		log.Logger.Error("Delete(Id)", err1)
-		goto finish
-	}
-finish:
 	this.ServeJSON()
 }
 

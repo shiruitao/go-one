@@ -32,6 +32,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/cheng/log"
+	"time"
 )
 
 type MessageServiceProvider struct{}
@@ -39,11 +40,12 @@ type MessageServiceProvider struct{}
 var MessageService *MessageServiceProvider
 
 type Message struct {
-	Id      int    `orm:"column(id)"`
-	Title   string `orm:"column(title)"`
-	Content string `orm:"column(content)"`
-	State   int    `orm:"column(state)"`
-	Label   string `orm:"column(label)"`
+	Id      int       `orm:"column(id)"`
+	Title   string    `orm:"column(title)"`
+	Content string    `orm:"column(content)"`
+	State   int       `orm:"column(state)"`
+	Label   string    `orm:"column(label)"`
+	Created time.Time `orm:"column(created)"`
 }
 
 // 注册模型
@@ -54,9 +56,7 @@ func init() {
 func (insert *MessageServiceProvider) Insert(content Message) (int64, error) {
 	fmt.Println("model中", content)
 	content.State = 1
-	o := orm.NewOrm() // 创建一个 Ormer
-	// NewOrm 的同时会执行 orm.BootStrap (整个 app 只执行一次)，用以验证模型之间的定义并缓存。
-	// o.Using("blog") // 默认使用 default，你可以指定为其他数据库
+	o := orm.NewOrm()
 	id, err := o.Insert(&content)
 	if err != nil {
 		return 0, err
@@ -70,25 +70,19 @@ type M struct {
 	label   string
 }
 
-func (readAll *MessageServiceProvider) ReadAll() ([]Message, error) {
+func (readAll *MessageServiceProvider) ReadAll() ([]Message, int64, error) {
 	var messages []Message
 	o := orm.NewOrm()
 	num, err := o.Raw("SELECT title, content, label FROM message").QueryRows(&messages)
-	if err == nil {
-		fmt.Println("cloumn:", num)
-	}
-	return messages, err
+	return messages, num, err
 }
 
-func (readLabel *MessageServiceProvider) ReadLabel(label string) []Message {
+func (readLabel *MessageServiceProvider) ReadLabel(label string) ([]Message, int64, error) {
 	o := orm.NewOrm()
 	var messages []Message
 	label = "%" + "%"
 	num, err := o.Raw("SELECT * FROM message WHERE label LIKE ? AND state = 1", label).QueryRows(&messages)
-	if err == nil {
-		fmt.Println("message content: ", messages, num)
-	}
-	return messages
+	return messages, num, err
 }
 
 // 大小写问题 ---------------------------------
@@ -110,9 +104,9 @@ func (readLabel *MessageServiceProvider) ReadLabel(label string) []Message {
 //}
 // ----------------------------------------------
 
-func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) ([]*Message, int64) {
+func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) ([]Message, int64, error) {
 	o := orm.NewOrm()
-	var messages []*Message
+	var messages []Message
 
 	//cond := orm.NewCondition()
 	//cond1 := cond.Or("title__icontains", title).Or("content__icontains", title).And("state__exact", 1)
@@ -123,28 +117,20 @@ func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) (
 	//num, err := qs.Filter("title__iexact", title).All(&messages)
 	title = "%" + title + "%"
 	num, err := o.Raw("SELECT * FROM message WHERE title LIKE ? OR content LIKE ? AND state = 1", title, title).QueryRows(&messages)
-	if err != nil {
-		log.Logger.Error("qs.Filter:", err)
-	}
-	return messages, num
+	return messages, num, err
 }
 
-//func (readTime *MessageServiceProvider) ReadTime(time time.Time) {
-//	o := orm.NewOrm()
-//	time = time + "%"
-//	var message []Message
-//	num, err := o.Raw()
-//}
-
-func (del *MessageServiceProvider) Delete(id int) (int64, error) {
+func (readTime *MessageServiceProvider) ReadTime(time time.Time) ([]Message, int64, error) {
 	o := orm.NewOrm()
-	res, err := o.Raw("UPDATE message SET state = 0 WHERE id = ?", id).Exec()
-	num, _ := res.RowsAffected()
-	if err != nil {
-		log.Logger.Error("Delete:", err)
-	}
-	return num, err
+	var messages []Message
+	num, err := o.Raw("SELECT title, content, label FROM message WHERE create LIKE ?", time).QueryRows(&messages)
+	return messages, num, err
+}
 
+func (del *MessageServiceProvider) Delete(id int) error {
+	o := orm.NewOrm()
+	_, err := o.Raw("UPDATE message SET state = 0 WHERE id = ?", id).Exec()
+	return err
 }
 
 func (delTest *MessageServiceProvider) DeleteTest(id int) (int64, error) {
