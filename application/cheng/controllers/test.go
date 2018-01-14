@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2018 SmartestEE Inc.
+ * Copyright (c) 2018 Shi Ruitao.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,11 +31,11 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/shiruitao/go-one/application/cheng/common"
 	"github.com/shiruitao/go-one/application/cheng/log"
 	"github.com/shiruitao/go-one/application/cheng/models"
+	"time"
 )
 
 // Operations about object
@@ -48,15 +48,14 @@ func (t *Test) Insert() {
 	err := json.Unmarshal(t.Ctx.Input.RequestBody, &Content)
 	if err != nil {
 		t.Data["json"] = map[string]interface{}{"content": err}
+	} else {
+		id, err1 := models.MessageService.Insert(Content)
+		if err1 != nil {
+			log.Logger.Error("MessageService.Insert err %v:", err1)
+		} else {
+			t.Data["json"] = map[string]interface{}{"id": id, common.RespKeyStatus: common.ErrSucceed}
+		}
 	}
-	id, err1 := models.MessageService.Insert(Content)
-	fmt.Println(id, err1)
-	if err1 != nil {
-		log.Logger.Error("MessageService.Insert err %v:", err1)
-		goto finish
-	}
-	t.Data["json"] = map[string]interface{}{"id": id}
-finish:
 	t.ServeJSON()
 }
 
@@ -109,7 +108,9 @@ func (this *Test) ReadTitleContent() {
 }
 
 func (this *Test) ReadTime() {
-	var created models.Message
+	var created struct{
+		Created time.Time
+	}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &created.Created)
 	if err != nil {
 		log.Logger.Error("time error", err)

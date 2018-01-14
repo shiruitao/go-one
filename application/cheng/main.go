@@ -34,6 +34,7 @@ import (
 	"github.com/astaxie/beego/plugins/cors"
 	"github.com/shiruitao/go-one/application/cheng/initorm"
 	_ "github.com/shiruitao/go-one/application/cheng/routers"
+	"github.com/shiruitao/go-one/application/cheng/filters"
 )
 
 func main() {
@@ -48,6 +49,9 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
+	//检查用户是否登录
+	beego.InsertFilter("/*", beego.BeforeRouter, filters.LoginFilter)
+
 	initorm.InitMysql()
 	beego.Run()
 }

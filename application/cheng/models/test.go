@@ -29,7 +29,6 @@
 package models
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/cheng/log"
 	"time"
@@ -45,7 +44,6 @@ type Message struct {
 	Content string    `orm:"column(content)"`
 	State   int       `orm:"column(state)"`
 	Label   string    `orm:"column(label)"`
-	Created time.Time `orm:"column(created)"`
 }
 
 // 注册模型
@@ -54,7 +52,6 @@ func init() {
 }
 
 func (insert *MessageServiceProvider) Insert(content Message) (int64, error) {
-	fmt.Println("model中", content)
 	content.State = 1
 	o := orm.NewOrm()
 	id, err := o.Insert(&content)
@@ -73,15 +70,15 @@ type M struct {
 func (readAll *MessageServiceProvider) ReadAll() ([]Message, int64, error) {
 	var messages []Message
 	o := orm.NewOrm()
-	num, err := o.Raw("SELECT title, content, label FROM message").QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label FROM message ORDER BY created DESC").QueryRows(&messages)
 	return messages, num, err
 }
 
 func (readLabel *MessageServiceProvider) ReadLabel(label string) ([]Message, int64, error) {
 	o := orm.NewOrm()
 	var messages []Message
-	label = "%" + "%"
-	num, err := o.Raw("SELECT * FROM message WHERE label LIKE ? AND state = 1", label).QueryRows(&messages)
+	label = "%" + label + "%"
+	num, err := o.Raw("SELECT * FROM message WHERE label LIKE ? AND state = 1 ORDER BY created DESC", label).QueryRows(&messages)
 	return messages, num, err
 }
 
@@ -116,14 +113,14 @@ func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) (
 	//qs := o.QueryTable("message")
 	//num, err := qs.Filter("title__iexact", title).All(&messages)
 	title = "%" + title + "%"
-	num, err := o.Raw("SELECT * FROM message WHERE title LIKE ? OR content LIKE ? AND state = 1", title, title).QueryRows(&messages)
+	num, err := o.Raw("SELECT * FROM message WHERE title LIKE ? OR content LIKE ? AND state = 1 ORDER BY created DESC", title, title).QueryRows(&messages)
 	return messages, num, err
 }
 
 func (readTime *MessageServiceProvider) ReadTime(time time.Time) ([]Message, int64, error) {
 	o := orm.NewOrm()
 	var messages []Message
-	num, err := o.Raw("SELECT title, content, label FROM message WHERE create LIKE ?", time).QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label FROM message WHERE create LIKE ? ORDER BY created DESC", time).QueryRows(&messages)
 	return messages, num, err
 }
 
