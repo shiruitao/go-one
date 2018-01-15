@@ -35,10 +35,8 @@ import (
 	"github.com/shiruitao/go-one/application/cheng/common"
 	"github.com/shiruitao/go-one/application/cheng/log"
 	"github.com/shiruitao/go-one/application/cheng/models"
-	"time"
 )
 
-// Operations about object
 type Test struct {
 	beego.Controller
 }
@@ -49,11 +47,11 @@ func (t *Test) Insert() {
 	if err != nil {
 		t.Data["json"] = map[string]interface{}{"content": err}
 	} else {
-		id, err1 := models.MessageService.Insert(Content)
+		err1 := models.MessageService.Insert(Content)
 		if err1 != nil {
 			log.Logger.Error("MessageService.Insert err %v:", err1)
 		} else {
-			t.Data["json"] = map[string]interface{}{"id": id, common.RespKeyStatus: common.ErrSucceed}
+			t.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
 		}
 	}
 	t.ServeJSON()
@@ -78,7 +76,7 @@ func (t *Test) ReadLabel() {
 	if err != nil {
 		log.Logger.Error("MessageService.Insert err %v:", err)
 	} else {
-		list, num, err:= models.MessageService.ReadLabel(label.Label)
+		list, num, err := models.MessageService.ReadLabel(label.Label)
 		if err != nil {
 			log.Logger.Error("Readlabel error:", err)
 		} else {
@@ -96,7 +94,7 @@ func (this *Test) ReadTitleContent() {
 	if err != nil {
 		log.Logger.Error("json.Unmarshal:", err)
 	}
-	message, num ,err:= models.MessageService.ReadTitleContent(Mess.Title)
+	message, num, err := models.MessageService.ReadTitleContent(Mess.Title)
 	this.Data["json"] = map[string]interface{}{"content:": message}
 	if err != nil {
 		log.Logger.Error("ReadTitleContent error:", err)
@@ -108,10 +106,10 @@ func (this *Test) ReadTitleContent() {
 }
 
 func (this *Test) ReadTime() {
-	var created struct{
-		Created time.Time
+	var created struct {
+		Created string `json:"created"`
 	}
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &created.Created)
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &created)
 	if err != nil {
 		log.Logger.Error("time error", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: "time error"}

@@ -32,9 +32,9 @@ package main
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	"github.com/shiruitao/go-one/application/cheng/filters"
 	"github.com/shiruitao/go-one/application/cheng/initorm"
 	_ "github.com/shiruitao/go-one/application/cheng/routers"
-	"github.com/shiruitao/go-one/application/cheng/filters"
 )
 
 func main() {

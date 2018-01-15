@@ -44,6 +44,7 @@ type Message struct {
 	Content string    `orm:"column(content)"`
 	State   int       `orm:"column(state)"`
 	Label   string    `orm:"column(label)"`
+	Created time.Time `orm:"column(created)"`
 }
 
 // 注册模型
@@ -51,14 +52,13 @@ func init() {
 	orm.RegisterModel(new(Message))
 }
 
-func (insert *MessageServiceProvider) Insert(content Message) (int64, error) {
+func (insert *MessageServiceProvider) Insert(content Message) error {
 	content.State = 1
 	o := orm.NewOrm()
-	id, err := o.Insert(&content)
-	if err != nil {
-		return 0, err
-	}
-	return id, err
+	sql := "INSERT INTO blog.message(title, content, state, Label, created) VALUES (?, ?, ?, ?, ?)"
+	values := []interface{}{content.Title, content.Content, content.State, content.Label, time.Now().Format("2006-01-02 15:04:05")}
+	_, err := o.Raw(sql, values).Exec()
+	return err
 }
 
 type M struct {
@@ -70,7 +70,7 @@ type M struct {
 func (readAll *MessageServiceProvider) ReadAll() ([]Message, int64, error) {
 	var messages []Message
 	o := orm.NewOrm()
-	num, err := o.Raw("SELECT id, title, content, label FROM message ORDER BY created DESC").QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE state = 1 ORDER BY id DESC").QueryRows(&messages)
 	return messages, num, err
 }
 
@@ -78,7 +78,7 @@ func (readLabel *MessageServiceProvider) ReadLabel(label string) ([]Message, int
 	o := orm.NewOrm()
 	var messages []Message
 	label = "%" + label + "%"
-	num, err := o.Raw("SELECT * FROM message WHERE label LIKE ? AND state = 1 ORDER BY created DESC", label).QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE label LIKE ? AND state = 1 ORDER BY id DESC", label).QueryRows(&messages)
 	return messages, num, err
 }
 
@@ -113,14 +113,14 @@ func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) (
 	//qs := o.QueryTable("message")
 	//num, err := qs.Filter("title__iexact", title).All(&messages)
 	title = "%" + title + "%"
-	num, err := o.Raw("SELECT * FROM message WHERE title LIKE ? OR content LIKE ? AND state = 1 ORDER BY created DESC", title, title).QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE title LIKE ? OR content LIKE ? AND state = 1 ORDER BY id DESC", title, title).QueryRows(&messages)
 	return messages, num, err
 }
 
-func (readTime *MessageServiceProvider) ReadTime(time time.Time) ([]Message, int64, error) {
+func (readTime *MessageServiceProvider) ReadTime(time string) ([]Message, int64, error) {
 	o := orm.NewOrm()
 	var messages []Message
-	num, err := o.Raw("SELECT id, title, content, label FROM message WHERE create LIKE ? ORDER BY created DESC", time).QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE created LIKE ? AND state = 1 ORDER BY id DESC", time).QueryRows(&messages)
 	return messages, num, err
 }
 

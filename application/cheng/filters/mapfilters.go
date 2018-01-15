@@ -34,8 +34,8 @@ var MapFilter map[string]interface{}
 func init() {
 	MapFilter = make(map[string]interface{})
 	MapFilter["/adminLogin"] = struct{}{}
-	MapFilter["/readAll"] = struct {}{}
-	MapFilter["/readLabel"] = struct {}{}
-	MapFilter["/readTitleContent"] = struct {}{}
-	MapFilter["/readTime"] = struct {}{}
+	MapFilter["/readAll"] = struct{}{}
+	MapFilter["/readLabel"] = struct{}{}
+	MapFilter["/readTitleContent"] = struct{}{}
+	MapFilter["/readTime"] = struct{}{}
 }

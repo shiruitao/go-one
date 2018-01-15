@@ -43,10 +43,6 @@ import (
 )
 
 func init() {
-	// 发表文章
-	beego.Router("/insert", &controllers.Test{}, "post:Insert")
-	// 删除文章
-	beego.Router("/delete", &controllers.Test{}, "post:Delete")
 	// 全读
 	beego.Router("/readAll", &controllers.Test{}, "get:ReadAll")
 	// 根据标签查询
@@ -55,6 +51,11 @@ func init() {
 	beego.Router("/readTitleContent", &controllers.Test{}, "post:ReadTitleContent")
 	// 根据时间查询
 	beego.Router("/readTime", &controllers.Test{}, "post:ReadTime")
+
+	// 发表文章
+	beego.Router("/insert", &controllers.Test{}, "post:Insert")
+	// 删除文章
+	beego.Router("/delete", &controllers.Test{}, "post:Delete")
 	// 注册
 	beego.Router("/adminCreate", &controllers.AdminController{}, "post:Create")
 	// 登录
