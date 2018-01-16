@@ -32,6 +32,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/cheng/log"
 	"time"
+	"fmt"
 )
 
 type MessageServiceProvider struct{}
@@ -117,10 +118,13 @@ func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) (
 	return messages, num, err
 }
 
-func (readTime *MessageServiceProvider) ReadTime(time string) ([]Message, int64, error) {
+func (readTime *MessageServiceProvider) ReadTime(date string) ([]Message, int64, error) {
 	o := orm.NewOrm()
 	var messages []Message
-	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE created LIKE ? AND state = 1 ORDER BY id DESC", time).QueryRows(&messages)
+	fmt.Println(date)
+	date = date + "%"
+	fmt.Println(date)
+	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE created LIKE ? AND state = 1 ORDER BY id DESC", date).QueryRows(&messages)
 	return messages, num, err
 }
 

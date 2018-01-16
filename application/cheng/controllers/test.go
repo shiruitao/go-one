@@ -106,15 +106,15 @@ func (this *Test) ReadTitleContent() {
 }
 
 func (this *Test) ReadTime() {
-	var created struct {
-		Created string `json:"created"`
+	var Date struct{
+		Date string
 	}
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &created)
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &Date)
 	if err != nil {
 		log.Logger.Error("time error", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: "time error"}
 	} else {
-		messages, num, err := models.MessageService.ReadTime(created.Created)
+		messages, num, err := models.MessageService.ReadTime(Date.Date)
 		if err != nil {
 			log.Logger.Error("time read error", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}

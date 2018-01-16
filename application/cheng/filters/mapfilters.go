@@ -28,7 +28,6 @@
  */
 
 package filters
-
 var MapFilter map[string]interface{}
 
 func init() {

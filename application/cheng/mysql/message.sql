@@ -39,5 +39,5 @@ CREATE TABLE IF NOT EXISTS `user` (
   `status` int(8) NOT NULL,
   `created` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnooDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ---------------------------------------------------------------------
