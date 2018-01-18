@@ -106,7 +106,7 @@ func (this *Test) ReadTitleContent() {
 }
 
 func (this *Test) ReadTime() {
-	var Date struct{
+	var Date struct {
 		Date string
 	}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &Date)
