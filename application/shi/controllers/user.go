@@ -11,11 +11,13 @@ type UserController struct {
 }
 
 func (this *UserController) Create() {
-	u := models.User{}
-	if err := this.ParseForm(&u); err != nil {
+	var user models.User
+	//u := models.User{}
+	err := this.ParseForm(&user)
+	if err != nil {
 		logger.Logger.Error("ParseForm:", err)
 	}
-	err := models.UserServer.Create(u)
+	err = models.UserServer.Create(user)
 	if err != nil {
 		logger.Logger.Error("models.UserServer.Create:", err)
 		this.Data["json"] = map[string]interface{}{"status": "success"}
