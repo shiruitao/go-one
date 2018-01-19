@@ -1,8 +1,8 @@
 package models
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/orm"
+	"time"
 )
 
 type UserServerProvider struct {
@@ -11,23 +11,32 @@ type UserServerProvider struct {
 var UserServer *UserServerProvider = &UserServerProvider{}
 
 type User struct {
-	Id    int    `form:"-" orm:"pk"`
-	Name  string `form:"name"`
-	Age   int    `form:"age"`
-	Email string
-	Sex   string
+	Id         int `orm:pk auto`
+	Int        int
+	Int8       int8
+	Int16      int16
+	Int32      int32
+	Int64      int64
+	Uint       uint
+	Uint16     uint16
+	Uint32     uint32
+	Uint64     uint64
+	Float32    float32
+	Float64    float64
+	Bool       bool
+	String     string
+	String128  string `orm:size 128`
+	StringText string `orm:type(text)`
+	Time       time.Time
+	Byte       byte
+	Rune       rune
 }
 
-func init() {
-	orm.RegisterModel(new(User))
-}
-
-func (create *UserServerProvider) Create(info User) error {
-	fmt.Println("111111", info)
+func (create *UserServerProvider) init() {
 	o := orm.NewOrm()
-	sql := "INSERT INTO luoo.user(name, age, email, sex) VALUES (?, ?, ?)"
-	values := []interface{}{info.Name, info.Age, info.Email, info.Sex}
-	raw := o.Raw(sql, values)
-	_, err := raw.Exec()
-	return err
+	o.Using("default")
+	//orm.RegisterModel(new(User))
+}
+
+func (create *UserServerProvider) Create() {
 }

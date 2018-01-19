@@ -14,5 +14,5 @@ import (
 )
 
 func init() {
-	beego.Router("/info", &controllers.UserController{}, "post:Create")
+	beego.Router("/info", &controllers.UserController{}, "get:Create")
 }
