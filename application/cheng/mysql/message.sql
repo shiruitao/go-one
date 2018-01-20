@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS `message` (
   `title` varchar(128) NOT NULL,
   `content` text,
   `state` int NOT NULL DEFAULT '1',
-  `label` varchar(64) NOT NULL DEFAULT '',
+  `label1` varchar(64) NOT NULL DEFAULT '',
+  `label2` varchar(64) NOT NULL DEFAULT '',
   `created` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;

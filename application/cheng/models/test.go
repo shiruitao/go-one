@@ -44,7 +44,8 @@ type Message struct {
 	Title   string    `orm:"column(title)"`
 	Content string    `orm:"column(content)"`
 	State   int       `orm:"column(state)"`
-	Label   string    `orm:"column(label)"`
+	Label1   string    `orm:"column(label1)"`
+	Label2   string    `orm:"column(label2)"`
 	Created time.Time `orm:"column(created)"`
 }
 
@@ -56,8 +57,8 @@ func init() {
 func (insert *MessageServiceProvider) Insert(content Message) error {
 	content.State = 1
 	o := orm.NewOrm()
-	sql := "INSERT INTO blog.message(title, content, state, Label, created) VALUES (?, ?, ?, ?, ?)"
-	values := []interface{}{content.Title, content.Content, content.State, content.Label, time.Now().Format("2006-01-02 15:04:05")}
+	sql := "INSERT INTO blog.message(title, content, state, Label1, Label2, created) VALUES (?, ?, ?, ?, ?, ?)"
+	values := []interface{}{content.Title, content.Content, content.State, content.Label1, content.Label2, time.Now().Format("2006-01-02 15:04:05")}
 	_, err := o.Raw(sql, values).Exec()
 	return err
 }
@@ -71,15 +72,14 @@ type M struct {
 func (readAll *MessageServiceProvider) ReadAll() ([]Message, int64, error) {
 	var messages []Message
 	o := orm.NewOrm()
-	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE state = 1 ORDER BY id DESC").QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label1, label2, created FROM message WHERE state = 1 ORDER BY id DESC").QueryRows(&messages)
 	return messages, num, err
 }
 
-func (readLabel *MessageServiceProvider) ReadLabel(label string) ([]Message, int64, error) {
+func (readLabel *MessageServiceProvider) ReadLabel(label1, label2 string) ([]Message, int64, error) {
 	o := orm.NewOrm()
 	var messages []Message
-	label = "%" + label + "%"
-	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE label LIKE ? AND state = 1 ORDER BY id DESC", label).QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label1, label2, created FROM message WHERE label1 = ? OR label2 = ? AND state = 1 ORDER BY id DESC", label1, label2).QueryRows(&messages)
 	return messages, num, err
 }
 

@@ -70,13 +70,14 @@ func (this *Test) ReadAll() {
 
 func (t *Test) ReadLabel() {
 	var label struct {
-		Label string `json:"label"`
+		Label1 string `json:"label1"`
+		Label2 string `json:"label2"`
 	}
 	err := json.Unmarshal(t.Ctx.Input.RequestBody, &label)
 	if err != nil {
 		log.Logger.Error("MessageService.Insert err %v:", err)
 	} else {
-		list, num, err := models.MessageService.ReadLabel(label.Label)
+		list, num, err := models.MessageService.ReadLabel(label.Label1, label.Label2)
 		if err != nil {
 			log.Logger.Error("Readlabel error:", err)
 		} else {
