@@ -44,8 +44,8 @@ type Message struct {
 	Title   string    `orm:"column(title)"`
 	Content string    `orm:"column(content)"`
 	State   int       `orm:"column(state)"`
-	Label1   string    `orm:"column(label1)"`
-	Label2   string    `orm:"column(label2)"`
+	Label1  string    `orm:"column(label1)"`
+	Label2  string    `orm:"column(label2)"`
 	Created time.Time `orm:"column(created)"`
 }
 
