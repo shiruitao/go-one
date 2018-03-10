@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `user_id` int(16) unsigned NOT NULL,
   `message_id` int(64) unsigned NOT NULL,
   `comment` text NOT NULL,
-  `status` int(8)
+  `status` int(8),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ---------------------------------------------------------------------
