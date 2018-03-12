@@ -38,7 +38,7 @@ import (
 type AdminServiceProvider struct {
 }
 
-var AdminService *AdminServiceProvider = &AdminServiceProvider{}
+var AdminService *AdminServiceProvider
 
 type Admin struct {
 	Id       int16  `json:"id" orm:"pk"`
