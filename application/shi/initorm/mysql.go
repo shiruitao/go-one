@@ -2,6 +2,7 @@ package initorm
 
 import (
 	"fmt"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
@@ -20,6 +21,7 @@ func InitMysql() {
 		orm.Debug = true
 	}
 	orm.RegisterDriver("mysql", orm.DRMySQL)
+
 	orm.RegisterDataBase("default", "mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", user, pass, host, port, db), maxIdle, maxConn)
 	orm.RegisterDataBase("luoo", "mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", user, pass, host, port, "luoo"), maxIdle, maxConn)
 }

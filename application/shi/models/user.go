@@ -8,7 +8,7 @@ import (
 type UserServerProvider struct {
 }
 
-var UserServer *UserServerProvider = &UserServerProvider{}
+var UserServer *UserServerProvider
 
 type User struct {
 	Id         int `orm:pk auto`
