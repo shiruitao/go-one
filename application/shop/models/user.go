@@ -42,11 +42,11 @@ type UserServiceProvider struct{}
 var UserService *UserServiceProvider
 
 type User struct {
-	UserID   uint32 `pk auto;json:"user_id"`
-	Name     string `orm:"column(name)";json:"name"`
-	Phone    string `orm:"column(phone)"; json:"phone" validate:"required,alphanum,len=11"`
-	PassWord string `orm:"column(pass_word)";json:"pass_word" validate:"required,min=6,max=30"`
-	State    int8   `orm:"column(state)";json:"state"`
+	ID       uint32 `orm:"column(id)"pk auto`
+	Name     string `orm:"column(name)"`
+	Phone    string `orm:"column(phone)"`
+	PassWord string `orm:"column(pass_word)"`
+	State    int8   `orm:"column(state)"`
 }
 
 type (
@@ -57,7 +57,7 @@ type (
 	}
 )
 
-func init() {
+func (this *UserServiceProvider) init() {
 	o := orm.NewOrm()
 	o.Using("default")
 	//orm.RegisterModel(new(User))

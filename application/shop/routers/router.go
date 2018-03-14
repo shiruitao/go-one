@@ -1,10 +1,11 @@
 package routers
 
 import (
-	"github.com/shiruitao/go-one/application/shop/controllers"
 	"github.com/astaxie/beego"
+
+	"github.com/shiruitao/go-one/application/shop/controllers"
 )
 
 func init() {
-    beego.Router("/", &controllers.MainController{})
+    beego.Router("/shop/user/create", &controllers.UserController{}, "post:CreateUser")
 }
