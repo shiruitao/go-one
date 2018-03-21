@@ -30,9 +30,11 @@ package models
 
 import (
 	"fmt"
-	"github.com/astaxie/beego/orm"
-	"github.com/shiruitao/go-one/application/cheng/log"
 	"time"
+
+	"github.com/astaxie/beego/orm"
+
+	"github.com/shiruitao/go-one/application/cheng/log"
 )
 
 type MessageServiceProvider struct{}

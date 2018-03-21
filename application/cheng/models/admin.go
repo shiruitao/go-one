@@ -31,7 +31,9 @@ package models
 
 import (
 	"errors"
+
 	"github.com/astaxie/beego/orm"
+
 	"github.com/shiruitao/go-one/application/cheng/utility"
 )
 
@@ -55,7 +57,7 @@ func (create *AdminServiceProvider) Create(content Admin) error {
 	content.State = 1
 	o := orm.NewOrm()
 	if len(content.Password) < 6 || len(content.Password) > 30 {
-		var e error = errors.New("password length error")
+		e := errors.New("password length error")
 		return e
 	}
 	hash, err := utility.GenerateHash(content.Password)
