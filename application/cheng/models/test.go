@@ -48,6 +48,7 @@ type Message struct {
 	State   int       `orm:"column(state)"`
 	Label1  string    `orm:"column(label1)"`
 	Label2  string    `orm:"column(label2)"`
+	Brief   string    `orm:"column(brief)"`
 	Created time.Time `orm:"column(created)"`
 }
 
@@ -59,8 +60,8 @@ func init() {
 func (insert *MessageServiceProvider) Insert(content Message) error {
 	content.State = 1
 	o := orm.NewOrm()
-	sql := "INSERT INTO blog.message(title, content, state, Label1, Label2, created) VALUES (?, ?, ?, ?, ?, ?)"
-	values := []interface{}{content.Title, content.Content, content.State, content.Label1, content.Label2, time.Now().Format("2006-01-02 15:04:05")}
+	sql := "INSERT INTO blog.message(title, content, state, Label1, Label2, brief,created) VALUES (?, ?, ?, ?, ?, ?, ?)"
+	values := []interface{}{content.Title, content.Content, content.State, content.Label1, content.Label2, content.Brief,time.Now().Format("2006-01-02 15:04:05")}
 	_, err := o.Raw(sql, values).Exec()
 	return err
 }
@@ -74,14 +75,14 @@ type M struct {
 func (readAll *MessageServiceProvider) ReadAll() ([]Message, int64, error) {
 	var messages []Message
 	o := orm.NewOrm()
-	num, err := o.Raw("SELECT id, title, content, label1, label2, created FROM message WHERE state = 1 ORDER BY id DESC").QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, state,label1, label2, brief, created FROM message WHERE state = 1 ORDER BY id DESC").QueryRows(&messages)
 	return messages, num, err
 }
 
 func (readLabel *MessageServiceProvider) ReadLabel(label1, label2 string) ([]Message, int64, error) {
 	o := orm.NewOrm()
 	var messages []Message
-	num, err := o.Raw("SELECT id, title, content, label1, label2, created FROM message WHERE label1 = ? OR label2 = ? AND state = 1 ORDER BY id DESC", label1, label2).QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label1, label2, brief, created FROM message WHERE label1 = ? OR label2 = ? AND state = 1 ORDER BY id DESC", label1, label2).QueryRows(&messages)
 	return messages, num, err
 }
 
@@ -116,7 +117,7 @@ func (readtitleContent *MessageServiceProvider) ReadTitleContent(title string) (
 	//qs := o.QueryTable("message")
 	//num, err := qs.Filter("title__iexact", title).All(&messages)
 	title = "%" + title + "%"
-	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE title LIKE ? OR content LIKE ? AND state = 1 ORDER BY id DESC", title, title).QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label1, label2, brief, created FROM message WHERE title LIKE ? OR content LIKE ? AND state = 1 ORDER BY id DESC", title, title).QueryRows(&messages)
 	return messages, num, err
 }
 
@@ -126,7 +127,7 @@ func (readTime *MessageServiceProvider) ReadTime(date string) ([]Message, int64,
 	fmt.Println(date)
 	date = date + "%"
 	fmt.Println(date)
-	num, err := o.Raw("SELECT id, title, content, label, created FROM message WHERE created LIKE ? AND state = 1 ORDER BY id DESC", date).QueryRows(&messages)
+	num, err := o.Raw("SELECT id, title, content, label1, label2, brief, created FROM message WHERE created LIKE ? AND state = 1 ORDER BY id DESC", date).QueryRows(&messages)
 	return messages, num, err
 }
 

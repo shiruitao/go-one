@@ -33,7 +33,7 @@ import (
 	"encoding/json"
 
 	"github.com/astaxie/beego"
-	
+
 	"github.com/shiruitao/go-one/application/cheng/common"
 	"github.com/shiruitao/go-one/application/cheng/log"
 	"github.com/shiruitao/go-one/application/cheng/models"
@@ -49,9 +49,9 @@ func (t *Test) Insert() {
 	if err != nil {
 		t.Data["json"] = map[string]interface{}{"content": err}
 	} else {
-		err1 := models.MessageService.Insert(Content)
-		if err1 != nil {
-			log.Logger.Error("MessageService.Insert err %v:", err1)
+		err = models.MessageService.Insert(Content)
+		if err != nil {
+			log.Logger.Error("MessageService.Insert err %v:", err)
 		} else {
 			t.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
 		}
@@ -133,7 +133,7 @@ var Id struct {
 }
 
 func (this *Test) Delete() {
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &Id)
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &Id.Id)
 	if err != nil {
 		log.Logger.Error("json.Unmarshal:", err)
 	} else {
@@ -145,6 +145,7 @@ func (this *Test) Delete() {
 			err1 := models.MessageService.Delete(Id.Id[i])
 			if err1 != nil {
 				log.Logger.Error("models.MessageService.Delete:", err1)
+				this.Data["json"] = map[string]interface{}{"status": "ErrMysql"}
 				break
 			}
 			num++
