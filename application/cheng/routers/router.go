@@ -56,6 +56,8 @@ func init() {
 	beego.Router("/insert", &controllers.Test{}, "post:Insert")
 	// 删除文章
 	beego.Router("/delete", &controllers.Test{}, "post:Delete")
+	// 修改文章
+	beego.Router("/modify", &controllers.Test{}, "post:Modify")
 	// 注册
 	beego.Router("/adminCreate", &controllers.AdminController{}, "post:Create")
 	// 登录

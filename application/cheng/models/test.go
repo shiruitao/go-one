@@ -61,7 +61,7 @@ func (insert *MessageServiceProvider) Insert(content Message) error {
 	content.State = 1
 	o := orm.NewOrm()
 	sql := "INSERT INTO blog.message(title, content, state, Label1, Label2, brief,created) VALUES (?, ?, ?, ?, ?, ?, ?)"
-	values := []interface{}{content.Title, content.Content, content.State, content.Label1, content.Label2, content.Brief,time.Now().Format("2006-01-02 15:04:05")}
+	values := []interface{}{content.Title, content.Content, content.State, content.Label1, content.Label2, content.Brief, time.Now().Format("2006-01-02 15:04:05")}
 	_, err := o.Raw(sql, values).Exec()
 	return err
 }
@@ -131,18 +131,24 @@ func (readTime *MessageServiceProvider) ReadTime(date string) ([]Message, int64,
 	return messages, num, err
 }
 
-func (del *MessageServiceProvider) Delete(id int) error {
+func (del *MessageServiceProvider) Delete(id *[]int) error {
 	o := orm.NewOrm()
-	_, err := o.Raw("UPDATE message SET state = 0 WHERE id = ?", id).Exec()
+	_, err := o.Raw("UPDATE message SET state = 0 WHERE id in (?)", id).Exec()
 	return err
 }
 
-func (delTest *MessageServiceProvider) DeleteTest(id int) (int64, error) {
+func (delTest *MessageServiceProvider) DeleteTest(id *[]int) (int64, error) {
 	o := orm.NewOrm()
-	res, err := o.Raw("DELETE FROM message WHERE id = ?", id).Exec()
+	res, err := o.Raw("DELETE FROM message WHERE id in (?)", id).Exec()
 	num, _ := res.RowsAffected()
 	if err != nil {
 		log.Logger.Error("Delete:", err)
 	}
 	return num, err
+}
+
+func (this *MessageServiceProvider) Modify(message *Message) error {
+	o := orm.NewOrm()
+	_, err := o.Update(message, "title", "content", "label1", "label2", "brief")
+	return err
 }

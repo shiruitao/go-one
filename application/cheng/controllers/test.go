@@ -128,29 +128,24 @@ func (this *Test) ReadTime() {
 	this.ServeJSON()
 }
 
-var Id struct {
-	Id []int `json:"id"`
-}
-
 func (this *Test) Delete() {
+	var Id struct {
+		Id []int `json:"id"`
+	}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &Id.Id)
 	if err != nil {
 		log.Logger.Error("json.Unmarshal:", err)
 	} else {
 		var (
-			num  int64
 			err1 error
 		)
-		for i := 0; i < len(Id.Id); i++ {
-			err1 := models.MessageService.Delete(Id.Id[i])
-			if err1 != nil {
-				log.Logger.Error("models.MessageService.Delete:", err1)
-				this.Data["json"] = map[string]interface{}{"status": "ErrMysql"}
-				break
-			}
-			num++
+		err1 = models.MessageService.Delete(&Id.Id)
+		if err1 != nil {
+			log.Logger.Error("models.MessageService.Delete:", err1)
+			this.Data["json"] = map[string]interface{}{"status": "ErrMysql"}
 		}
-		this.Data["json"] = map[string]interface{}{"line": num}
+
+		this.Data["json"] = map[string]interface{}{"status": "success"}
 		if err1 != nil {
 			log.Logger.Error("Delete(Id)", err1)
 		}
@@ -159,19 +154,36 @@ func (this *Test) Delete() {
 }
 
 func (this *Test) DeleteTest() {
+	var Id struct {
+		Id []int `json:"id"`
+	}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &Id)
 	if err != nil {
 		log.Logger.Error("json.Unmarshal:", err)
 	}
-	var num int64
-	var err1 error
-	for i := 0; i < len(Id.Id); i++ {
-		num, err1 = models.MessageService.DeleteTest(Id.Id[i])
-		if err1 != nil {
-			break
+		_, err = models.MessageService.DeleteTest(&Id.Id)
+		if err != nil {
+			log.Logger.Error("mysqlErr:", err)
+			this.Data["json"] = map[string]interface{}{"status": "ErrMysql"}
 		}
-		num += 1
+	this.Data["json"] = map[string]interface{}{"status": "success"}
+	this.ServeJSON()
+}
+
+func (this *Test) Modify() {
+	var (
+		mess models.Message
+	)
+
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &mess)
+	if err != nil {
+		log.Logger.Error("json.Unmarshal:", err)
 	}
-	this.Data["json"] = map[string]interface{}{"执行数": num}
+	err = models.MessageService.Modify(&mess)
+	if err != nil {
+		log.Logger.Error("models.MessageService.Modify:", err)
+		this.Data["json"] = map[string]interface{}{"status": "ErrMysql"}
+	}
+	this.Data["json"] = map[string]interface{}{"status": "success"}
 	this.ServeJSON()
 }
