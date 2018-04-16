@@ -7,7 +7,6 @@ import (
 	"github.com/shiruitao/go-one/application/shi/initorm"
 	_ "github.com/shiruitao/go-one/application/shi/routers"
 	"github.com/shiruitao/go-one/application/shi/models"
-	//"time"
 )
 
 //func init() {
@@ -38,7 +37,7 @@ import (
 
 func Table() {
 	//orm.RunCommand()
-	force := true
+	force := false
 	verbose := true
 	_ = orm.RunSyncdb("luoo", force, verbose)
 }
