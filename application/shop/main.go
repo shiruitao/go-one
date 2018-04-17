@@ -13,7 +13,7 @@ import (
 func Table() {
 	force := false
 	verbose := true
-	_ = orm.RunSyncdb("default", force, verbose)
+	_ = orm.RunSyncdb("store", force, verbose)
 }
 
 func main() {

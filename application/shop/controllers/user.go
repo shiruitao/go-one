@@ -15,7 +15,7 @@ type UserController struct {
 }
 
 func (this *UserController) CreateUser() {
-	var user models.CreateUser
+	var user models.User
 
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &user)
 	if err != nil {

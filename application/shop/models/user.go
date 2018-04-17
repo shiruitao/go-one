@@ -30,11 +30,12 @@
 package models
 
 import (
-	"log"
+	//"log"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 
-	"github.com/shiruitao/go-one/application/shop/utility"
+	//"github.com/shiruitao/go-one/application/shop/utility"
 )
 
 type UserServiceProvider struct{}
@@ -42,42 +43,34 @@ type UserServiceProvider struct{}
 var UserService *UserServiceProvider
 
 type User struct {
-	ID       uint32 `orm:"column(id)"pk auto`
-	Name     string `orm:"column(name)"`
-	Phone    string `orm:"column(phone)"`
-	PassWord string `orm:"column(pass_word)"`
-	State    int8   `orm:"column(state)"`
+	ID      uint32    `orm:"column(id);pk;auto"`
+	Name    string    `orm:"column(name);null;utf8_bin" json:"name"`
+	UnionID string    `orm:"column(unionid);unique" json:"union_id"`
+	Created time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 }
-
-type (
-	CreateUser struct {
-		Name        string `json:"name" validate:"required`
-		PassWord    string `json:"pass_word" validate:"required,min=6,max=30"`
-		ConfirmPass string `json:"confirm_pass"`
-	}
-)
 
 func (this *UserServiceProvider) init() {
 	o := orm.NewOrm()
-	o.Using("default")
-	//orm.RegisterModel(new(User))
+	o.Using("store")
 }
 
-func (this *UserServiceProvider) CreateUser(u *CreateUser) (int64, error) {
-	var id int64
-
-	hash, err := utility.GenerateHash(u.PassWord)
-	if err != nil {
-		log.Println(err)
-		return id, err
-	}
-	password := string(hash)
-
+func (this *UserServiceProvider) CreateUser(u *User) (int64, error) {
 	o := orm.NewOrm()
-	var user User
+	var (
+		user User
+		created bool
+		id int64
+		err error
+	)
 	user.Name = u.Name
-	user.PassWord = password
-	id, err = o.Insert(&user)
+	user.UnionID = u.UnionID
 
+	if created, id, err = o.ReadOrCreate(&user, u.UnionID); err == nil {
+		if created {
+			return id, err
+		} else {
+			return id, err
+		}
+	}
 	return id, err
 }
