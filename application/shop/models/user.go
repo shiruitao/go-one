@@ -34,7 +34,6 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
-
 	//"github.com/shiruitao/go-one/application/shop/utility"
 )
 
@@ -46,6 +45,7 @@ type User struct {
 	ID      uint32    `orm:"column(id);pk;auto"`
 	Name    string    `orm:"column(name);null;utf8_bin" json:"name"`
 	UnionID string    `orm:"column(unionid);unique" json:"union_id"`
+	IsAdmin bool      `orm:"column(isadmin)" json:"is_admin"`
 	Created time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 }
 
@@ -54,23 +54,21 @@ func (this *UserServiceProvider) init() {
 	o.Using("store")
 }
 
-func (this *UserServiceProvider) CreateUser(u *User) (int64, error) {
-	o := orm.NewOrm()
+func (this *UserServiceProvider) CreateUser(u *User) (uint32, bool, error) {
 	var (
 		user User
-		created bool
-		id int64
-		err error
+		id   int64
+		err  error
 	)
 	user.Name = u.Name
 	user.UnionID = u.UnionID
 
-	if created, id, err = o.ReadOrCreate(&user, u.UnionID); err == nil {
-		if created {
-			return id, err
-		} else {
-			return id, err
-		}
+
+	o := orm.NewOrm()
+	if _, id, err = o.ReadOrCreate(&user, u.UnionID); err != nil {
+		return uint32(id), false, err
 	}
-	return id, err
+	user = User{ID: uint32(id)}
+	err = o.Read(&user)
+	return uint32(id), user.IsAdmin, err
 }
