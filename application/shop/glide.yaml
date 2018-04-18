@@ -1,0 +1,9 @@
+package: github.com/shiruitao/go-one/application/shop
+import:
+- package: github.com/astaxie/beego
+  version: ^1.9.2
+  subpackages:
+  - orm
+- package: github.com/go-sql-driver/mysql
+  version: ^1.3.0
+- package: golang.org/x/crypto/bcrypt

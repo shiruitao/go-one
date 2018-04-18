@@ -1,5 +1,5 @@
-hash: 451823bb686df071de34911f1e18328454a5beaea1b69f84eb5bbe594b74a49c
-updated: 2017-12-30T09:44:03.213296606+08:00
+hash: 3e618333c0f4c716ea15c9997076c3c51f196ac0d8760c103d76caae17369e09
+updated: 2018-04-17T20:28:13.173057+08:00
 imports:
 - name: github.com/astaxie/beego
   version: bf5c5626ab429e66d88602e1ab1ab5fbf4629a01
@@ -10,26 +10,17 @@ imports:
   - grace
   - logs
   - orm
+  - plugins/cors
   - session
   - toolbox
   - utils
+- name: github.com/dgrijalva/jwt-go
+  version: 06ea1031745cb8b3dab3f6a236daf2b0aa468b7e
 - name: github.com/go-sql-driver/mysql
   version: a0583e0143b1624142adab07e0e97fe106d99561
-testImports:
-- name: github.com/gopherjs/gopherjs
-  version: 444abdf920945de5d4a977b572bcc6c674d1e4eb
+- name: golang.org/x/crypto
+  version: d6449816ce06963d9d136eee5a56fca5b0616e7e
   subpackages:
-  - js
-- name: github.com/jtolds/gls
-  version: 77f18212c9c7edc9bd6a33d383a7b545ce62f064
-- name: github.com/smartystreets/assertions
-  version: 0b37b35ec7434b77e77a4bb29b79677cced992ea
-  subpackages:
-  - internal/go-render/render
-  - internal/oglematchers
-- name: github.com/smartystreets/goconvey
-  version: e5b2b7c9111590d019a696c7800593f666e1a7f4
-  subpackages:
-  - convey
-  - convey/gotest
-  - convey/reporting
+  - bcrypt
+  - blowfish
+testImports: []
