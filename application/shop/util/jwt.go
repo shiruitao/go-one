@@ -36,7 +36,7 @@ import (
 )
 
 const (
-	tokenKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+	tokenKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ3"
 	UserID = "userid"
 	IsAdmin = "isadmin"
 )
@@ -46,7 +46,7 @@ func NewToken(userID uint32, isAdmin bool) (string, error) {
 	claims[UserID] = userID
 	claims[IsAdmin] = isAdmin
 	claims["exp"] = time.Now().Add(time.Hour * 480).Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString([]byte(tokenKey))
 }

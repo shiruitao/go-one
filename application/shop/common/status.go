@@ -37,9 +37,8 @@ const (
 	ErrWrongPass     = "password error" // 密码错误
 	ErrMysqlQuery    = "mysql error"    // MySQL 错误
 
-	// Session
-	SessionAdminID   = "adminId"
-	SessionAdminName = "adminName"
+	// ErrToken - Invalid Token
+	ErrToken = "Invalid Token"
 	// Resp
 	RespKeyStatus = "status"
 	RespKeyData   = "data"

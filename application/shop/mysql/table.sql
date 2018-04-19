@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `user` (
   `id` int(32) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NULL,
-  `unionid` varchar(128) NOT NULL,
+  `unionid` varchar(128) UNIQUE NOT NULL,
   `isadmin` BOOLEAN DEFAULT FALSE,
   `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

@@ -28,11 +28,13 @@ func (this *UserController) CreateUser() {
 		log.Println(err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 	}
+
 	token, err := util.NewToken(id, isAdmin)
 	if err != nil {
 		log.Println("Error in getting token:", err)
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "token:": token}
 	}
-	this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "token:": token}
 	this.ServeJSON()
 }

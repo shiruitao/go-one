@@ -8,4 +8,6 @@ import (
 
 func init() {
     beego.Router("/shop/user/create", &controllers.UserController{}, "post:CreateUser")
+
+	beego.Router("/shop/ware/create", &controllers.WareController{}, "post:CreateWare")
 }
