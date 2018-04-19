@@ -36,7 +36,7 @@ import (
 )
 
 const (
-	tokenKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ3"
+	tokenKey = "123456"
 	UserID = "userid"
 	IsAdmin = "isadmin"
 )
