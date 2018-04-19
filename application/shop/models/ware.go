@@ -30,8 +30,8 @@
 package models
 
 import (
-	"time"
 	"github.com/astaxie/beego/orm"
+	"time"
 )
 
 type WareServiceProvider struct{}
@@ -39,19 +39,19 @@ type WareServiceProvider struct{}
 var WareService *WareServiceProvider
 
 type Ware struct {
-	ID       uint32 `orm:"column(id);pk;auto" json:"id"`
-	Name     string `orm:"column(name)" json:"name"`
-	Desc     string `orm:"column(desc)" json:"desc"`
-	Price    float32 `orm:"column(price)" json:"price"`
-	SalePrice float32 `orm:"column(saleprice)" json:"sale_price"`
-	Inventory int32 `orm:"column(inventory)" json:"inventory"`
-	CategoryID uint32 `orm:"column(category)" json:"category_id"`
-	Avatar  string `orm:"column(avatar)" json:"avatar"`
-	Picture string `orm:"column(picture)" json:"picture"`
-	DetailPic string `orm:"column(detailpic)" json:"detail_pic"`
-	Status   string `orm:"column(status)" json:"status"`
-	Created  time.Time `orm:"column(created)" json:"created"`
-	Updated  time.Time `orm:"column(updated)" json:"updated"`
+	ID         uint32    `orm:"column(id);pk;auto" json:"id"`
+	Name       string    `orm:"column(name)" json:"name"`
+	Desc       string    `orm:"column(desc)" json:"desc"`
+	Price      float32   `orm:"column(price)" json:"price"`
+	SalePrice  float32   `orm:"column(saleprice)" json:"sale_price"`
+	Inventory  int32     `orm:"column(inventory)" json:"inventory"`
+	Category   string    `orm:"column(category)" json:"category"`
+	Avatar     string    `orm:"column(avatar)" json:"avatar"`
+	Picture    string    `orm:"column(picture)" json:"picture"`
+	DetailPic  string    `orm:"column(detailpic)" json:"detail_pic"`
+	Status     int8      `orm:"column(status)" json:"status"` // 0 -> hide; 1 -> normal; 2 -> recommend
+	Created    time.Time `orm:"column(created)" json:"created"`
+	Updated    time.Time `orm:"column(updated)" json:"updated"`
 }
 
 func (this *WareServiceProvider) init() {
@@ -59,8 +59,8 @@ func (this *WareServiceProvider) init() {
 	o.Using("store")
 }
 
-func (this *WareServiceProvider) AddWare(info *Ware) (uint32, error){
+func (this *WareServiceProvider) AddWare(info *Ware) (uint32, error) {
 	o := orm.NewOrm()
-	id, err :=o.Insert(&info)
+	id, err := o.Insert(&info)
 	return uint32(id), err
 }
