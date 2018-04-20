@@ -34,11 +34,9 @@ import (
 	"encoding/json"
 
 	"github.com/astaxie/beego"
-	"github.com/dgrijalva/jwt-go"
 
 	"github.com/shiruitao/go-one/application/shop/common"
 	"github.com/shiruitao/go-one/application/shop/models"
-	"github.com/shiruitao/go-one/application/shop/util"
 )
 
 type WareController struct {
@@ -48,10 +46,10 @@ type WareController struct {
 func (this *WareController) CreateWare() {
 	var ware models.Ware
 
-	isAdmin := this.Ctx.Request.Context().Value("user").(jwt.MapClaims)[util.IsAdmin].(bool)
+	isAdmin := this.GetSession(common.SessionIsAdmin).(bool)
 	if !isAdmin {
 		log.Println("You don't have access")
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrToken}
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSession}
 	}
 
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &ware)

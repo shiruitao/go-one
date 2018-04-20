@@ -8,7 +8,7 @@ import (
 
 	"github.com/shiruitao/go-one/application/shop/models"
 	"github.com/shiruitao/go-one/application/shop/common"
-	"github.com/shiruitao/go-one/application/shop/util"
+	"github.com/shiruitao/go-one/application/shop/utility"
 )
 
 type UserController struct {
@@ -26,15 +26,17 @@ func (this *UserController) CreateUser() {
 	id, isAdmin, err := models.UserService.CreateUser(&user)
 	if err != nil {
 		log.Println(err)
+		this.SetSession(common.SessionName, id)
+		this.SetSession(common.SessionIsAdmin, isAdmin)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 	}
 
-	token, err := util.NewToken(id, isAdmin)
+	//token, err := utility.NewToken(id, isAdmin)
 	if err != nil {
 		log.Println("Error in getting token:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "token:": token}
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
 	}
 	this.ServeJSON()
 }

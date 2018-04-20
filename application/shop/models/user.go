@@ -33,7 +33,6 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
-	//"github.com/shiruitao/go-one/application/shop/utility"
 )
 
 type UserServiceProvider struct{}
