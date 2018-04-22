@@ -47,9 +47,8 @@ type User struct {
 	Created time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 }
 
-func (this *UserServiceProvider) init() {
-	o := orm.NewOrm()
-	o.Using("store")
+func init() {
+	orm.RegisterModel(new(User))
 }
 
 func (this *UserServiceProvider) CreateUser(u *User) (uint32, bool, error) {

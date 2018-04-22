@@ -46,24 +46,102 @@ type WareController struct {
 func (this *WareController) CreateWare() {
 	var ware models.Ware
 
-	isAdmin := this.GetSession(common.SessionIsAdmin).(bool)
-	if !isAdmin {
+	isAdmin := this.GetSession(common.SessionIsAdmin)
+	if isAdmin != true {
 		log.Println("You don't have access")
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSession}
+	} else {
+		err := json.Unmarshal(this.Ctx.Input.RequestBody, &ware)
+		if err != nil {
+			log.Println("error json:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+		} else {
+			err = models.WareService.UpdateWare(&ware)
+			if err != nil {
+				log.Println("ErrMysql:", err)
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+			} else {
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+			}
+		}
 	}
+	this.ServeJSON()
+}
 
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &ware)
+func (this *WareController) GetAll() {
+	ware, num, err := models.WareService.GetAll()
 	if err != nil {
-		log.Println("error json:", err)
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
-	}
-
-	id, err := models.WareService.AddWare(&ware)
-	if err != nil {
-		log.Println("error mysql:", err)
+		log.Println("ErrMysql:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 	} else {
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "id": id}
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, common.RespKeyData: ware, "number": num}
+	}
+	this.ServeJSON()
+}
+
+func (this *WareController) GetRecommend() {
+	ware, num, err := models.WareService.GetRecommend()
+	if err != nil {
+		log.Println("ErrMysql", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+	} else {
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "num": num, common.RespKeyData: ware}
+	}
+	this.ServeJSON()
+}
+
+func (this *WareController) UpdateWare() {
+	var (
+		ware models.Ware
+	)
+
+	isAdmin := this.GetSession(common.SessionIsAdmin)
+	if isAdmin != true {
+		log.Println("You don't have access")
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSession}
+	} else {
+		err := json.Unmarshal(this.Ctx.Input.RequestBody, &ware)
+		if err != nil {
+			log.Println("error json:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+		} else {
+			err = models.WareService.UpdateWare(&ware)
+			if err != nil {
+				log.Println("ErrMysql:", err)
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+			} else {
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+			}
+		}
+
+	}
+	this.ServeJSON()
+}
+
+func (this *WareController) StatusWare() {
+	var status struct {
+		ID     uint32 `json:"id"`
+		Status int8   `json:"status"`
+	}
+
+	isAdmin := this.GetSession(common.SessionIsAdmin)
+	if isAdmin != true {
+		log.Println("You don't have access")
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSession}
+	} else {
+		err := json.Unmarshal(this.Ctx.Input.RequestBody, &status)
+		if err != nil {
+			log.Println("error json:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+		} else {
+			err = models.WareService.StatusWare(status.ID, status.Status)
+			if err != nil {
+				log.Println("ErrMysql:", err)
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+			} else {
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+			}
+		}
 	}
 	this.ServeJSON()
 }

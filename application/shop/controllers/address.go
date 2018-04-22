@@ -24,14 +24,45 @@
 
 /*
  * Revision History:
- *     Initial: 2018/04/20        Shi Ruitao
+ *     Initial: 2018/04/22        Shi Ruitao
  */
 
-package common
+package controllers
 
-const (
-	// Session
-	SessionIsAdmin = "isadmin"
-	SessionUserID    = "userid"
-	// Resp
+import (
+	"log"
+	"encoding/json"
+
+	"github.com/astaxie/beego"
+
+	"github.com/shiruitao/go-one/application/shop/models"
+	"github.com/shiruitao/go-one/application/shop/common"
 )
+
+type AddressController struct {
+	beego.Controller
+}
+
+func (this *AddressController) AddAddress() {
+	var (
+		address models.Address
+	)
+
+	userID := this.GetSession(common.SessionUserID).(uint32)
+
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &address)
+	if err != nil {
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		address.UserID = userID
+		err = models.AddressService.AddAddress(&address)
+		if err != nil {
+			log.Println("ErrMysql:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+	this.ServeJSON()
+}

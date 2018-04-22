@@ -79,11 +79,11 @@ func (readAll *MessageServiceProvider) ReadAll() ([]Message, int64, error) {
 	return messages, num, err
 }
 
-func (readLabel *MessageServiceProvider) ReadLabel(label1, label2 string) ([]Message, int64, error) {
+func (readLabel *MessageServiceProvider) ReadLabel(label1, label2 string) (*[]Message, int64, error) {
 	o := orm.NewOrm()
 	var messages []Message
 	num, err := o.Raw("SELECT id, title, content, label1, label2, brief, created FROM message WHERE label1 = ? OR label2 = ? AND state = 1 ORDER BY id DESC", label1, label2).QueryRows(&messages)
-	return messages, num, err
+	return &messages, num, err
 }
 
 // 大小写问题 ---------------------------------

@@ -30,8 +30,9 @@
 package models
 
 import (
-	"github.com/astaxie/beego/orm"
 	"time"
+
+	"github.com/astaxie/beego/orm"
 )
 
 type WareServiceProvider struct{}
@@ -39,28 +40,90 @@ type WareServiceProvider struct{}
 var WareService *WareServiceProvider
 
 type Ware struct {
-	ID         uint32    `orm:"column(id);pk;auto" json:"id"`
-	Name       string    `orm:"column(name)" json:"name"`
-	Desc       string    `orm:"column(desc)" json:"desc"`
-	Price      float32   `orm:"column(price)" json:"price"`
-	SalePrice  float32   `orm:"column(saleprice)" json:"sale_price"`
-	Inventory  int32     `orm:"column(inventory)" json:"inventory"`
-	Category   string    `orm:"column(category)" json:"category"`
-	Avatar     string    `orm:"column(avatar)" json:"avatar"`
-	Picture    string    `orm:"column(picture)" json:"picture"`
-	DetailPic  string    `orm:"column(detailpic)" json:"detail_pic"`
-	Status     int8      `orm:"column(status)" json:"status"` // 0 -> hide; 1 -> normal; 2 -> recommend
-	Created    time.Time `orm:"column(created)" json:"created"`
-	Updated    time.Time `orm:"column(updated)" json:"updated"`
+	ID        uint32    `orm:"column(id);pk;auto" json:"id"`
+	Name      string    `orm:"column(name)" json:"name"`
+	Desc      string    `orm:"column(desc)" json:"desc"`
+	Price     float32   `orm:"column(price)" json:"price"`
+	SalePrice float32   `orm:"column(saleprice)" json:"sale_price"`
+	Inventory int32     `orm:"column(inventory)" json:"inventory"`
+	Category  string    `orm:"column(category)" json:"category"`
+	Avatar    string    `orm:"column(avatar)" json:"avatar"`
+	Image     string    `orm:"column(image)" json:"image"`
+	DetailPic string    `orm:"column(detailpic)" json:"detail_pic"`
+	Status    int8      `orm:"column(status)" json:"status"` // 0 -> hide; 1 -> normal; 2 -> recommend
+	Updated   time.Time `orm:"column(updated)" json:"updated"`
+	Created   time.Time `orm:"column(created);auto_now_add;type(datetime)" json:"created"`
 }
 
-func (this *WareServiceProvider) init() {
-	o := orm.NewOrm()
-	o.Using("store")
+func init() {
+	orm.RegisterModel(new(Ware))
 }
 
 func (this *WareServiceProvider) AddWare(info *Ware) (uint32, error) {
+	var (
+		ware Ware
+	)
+
+	ware.Name = info.Name
+	ware.Desc = info.Desc
+	ware.Price = info.Price
+	ware.SalePrice = info.SalePrice
+	ware.Inventory = info.Inventory
+	ware.Category = info.Category
+	ware.Status = info.Status
+	ware.Avatar = info.Avatar
+	ware.Image = info.Image
+	ware.DetailPic = info.DetailPic
+
 	o := orm.NewOrm()
-	id, err := o.Insert(&info)
+	id, err := o.Insert(&ware)
 	return uint32(id), err
+}
+
+func (this *WareServiceProvider) GetAll() (*[]Ware, int64, error) {
+	var (
+		ware []Ware
+	)
+	o := orm.NewOrm()
+	num, err := o.Raw("SELECT * FROM ware WHERE status IN (1,2) ORDER BY id DESC").QueryRows(&ware)
+	return &ware, num, err
+}
+
+func (this *WareServiceProvider) GetRecommend() (*[]Ware, int64, error) {
+	var (
+		ware []Ware
+	)
+	o := orm.NewOrm()
+	num, err := o.Raw("SELECT * FROM ware WHERE status = 2 ORDER BY id DESC").QueryRows(&ware)
+	return &ware, num, err
+}
+
+func (this *WareServiceProvider) UpdateWare(info *Ware) error {
+	o := orm.NewOrm()
+
+	ware := Ware{ID: info.ID}
+	ware.Name = info.Name
+	ware.Desc = info.Desc
+	ware.Price = info.Price
+	ware.SalePrice = info.SalePrice
+	ware.Inventory = info.Inventory
+	ware.Category = info.Category
+	ware.Status = info.Status
+	ware.Avatar = info.Avatar
+	ware.Image = info.Image
+	ware.DetailPic = info.DetailPic
+	ware.Updated = time.Now()
+
+	_, err := o.Update(&ware, "name", "desc", "price", "saleprice", "inventory", "category", "status", "avatar", "image", "detailpic", "updated")
+	return err
+}
+
+func (this *WareServiceProvider) StatusWare(id uint32, status int8) error {
+	o := orm.NewOrm()
+
+	ware := Ware{ID: id}
+	ware.Status = status
+
+	_, err := o.Update(&ware, "status")
+	return err
 }

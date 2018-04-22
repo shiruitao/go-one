@@ -24,53 +24,43 @@
 
 /*
  * Revision History:
- *     Initial: 2018/04/20        Shi Ruitao
+ *     Initial: 2018/04/22        Shi Ruitao
  */
 
-package base
+package models
 
 import (
-	"github.com/astaxie/beego"
-	"gopkg.in/go-playground/validator.v9"
+	"github.com/astaxie/beego/orm"
+	"time"
 )
 
-// Controller wraps general functionality.
-type Controller struct {
-	beego.Controller
+type AddressServiceProvider struct{}
+
+var AddressService AddressServiceProvider
+
+type Address struct {
+	ID        uint32    `orm:"column(id);pk;auto" json:"id"`
+	UserID    uint32    `orm:"column(userid)" json:"user_id"`
+	Name      string    `orm:"column(name)" json:"name"`
+	Address   string    `orm:"column(address)" json:"address"`
+	Phone     string    `orm:"column(phone)" json:"phone"`
+	IsDefault bool      `orm:"column(isdefault)" json:"is_default"`
+	Created   time.Time `orm:"column(created);auto_now_add;type(datetime)" json:"created"`
 }
 
-// Validate the parameters.
-func (base Controller) Validate(val interface{}) error {
-	v := validator.New()
-
-	return v.Struct(val)
+func init() {
+	orm.RegisterModel(new(Address))
 }
 
-// WriteStatusAndDataJSON write JSON encoding status (and data) to controller and sends a response.
-// The data is optional.
-func (base Controller) WriteStatusAndDataJSON(status int, data interface{}) {
-	if data == nil {
-		base.Data["json"] = map[string]interface{}{
-			"status": status,
-		}
-
-		base.ServeJSON(true)
+func (this *AddressServiceProvider) AddAddress(info *Address) error {
+	o := orm.NewOrm()
+	addr := Address{
+		UserID:    info.UserID,
+		Name:      info.Name,
+		Address:   info.Address,
+		Phone:     info.Phone,
+		IsDefault: info.IsDefault,
 	}
-
-	base.Data["json"] = map[string]interface{}{
-		"status": status,
-		"data":   data,
-	}
-
-	base.ServeJSON(true)
-}
-
-// WriteStatusAndTokenJSON write JSON encoding status and token to controller and sends a response.
-func (base Controller) WriteStatusAndTokenJSON(status int, token interface{}) {
-	base.Data["json"] = map[string]interface{}{
-		"status": status,
-		"token":  token,
-	}
-
-	base.ServeJSON(true)
+	_, err := o.Insert(&addr)
+	return err
 }

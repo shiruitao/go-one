@@ -36,13 +36,13 @@ import (
 
 func LoginFilter(ctx *context.Context) {
 	if _, ok := MapFilter[ctx.Request.RequestURI]; !ok {
-		isAdmin := ctx.Input.CruSession.Get(common.SessionIsAdmin)
-		if isAdmin == nil {
-			ctx.Output.JSON(map[string]interface{}{common.RespKeyStatus: common.ErrLoginRequired}, false, false)
-		}
-		userID := ctx.Input.CruSession.Get(common.SessionName)
+		userID := ctx.Input.CruSession.Get(common.SessionUserID)
 		if userID == nil {
 			ctx.Output.JSON(map[string]interface{}{common.RespKeyStatus: common.ErrLoginRequired}, false, false)
+		}
+		isAdmin := ctx.Input.CruSession.Get(common.SessionIsAdmin)
+		if isAdmin == nil {
+			ctx.Output.JSON(map[string]interface{}{common.RespKeyStatus: common.ErrPermission}, false, false)
 		}
 	}
 }

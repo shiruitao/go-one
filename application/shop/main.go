@@ -2,19 +2,12 @@ package main
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
 
-	"github.com/shiruitao/go-one/application/shop/models"
+	"github.com/shiruitao/go-one/application/shop/filters"
 	"github.com/shiruitao/go-one/application/shop/initorm"
 	_ "github.com/shiruitao/go-one/application/shop/routers"
 )
-
-func Table() {
-	force := false
-	verbose := true
-	_ = orm.RunSyncdb("store", force, verbose)
-}
 
 func main() {
 	if beego.BConfig.RunMode == "dev" {
@@ -32,9 +25,7 @@ func main() {
 
 	//检查用户是否登录
 	beego.InsertFilter("/*", beego.BeforeRouter, filters.LoginFilter)
-	orm.RegisterModel(new(models.User))
 	initorm.InitMysql()
-	Table()
 	beego.Run()
 }
 
