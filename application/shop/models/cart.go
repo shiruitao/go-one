@@ -40,9 +40,9 @@ type CartServiceProvider struct{}
 var CartService CartServiceProvider
 
 type Cart struct {
-	ID      uint64    `orm:"column(id);pk;auto" json:"id"`
-	UserID  uint32    `orm:"column(uerid)" json:"user_id"`
-	WareID  string    `orm:"column(wareid)" json:"ware_id"`
+	ID      uint64    `orm:"column(id);pk;auto"`
+	UserID  uint32    `orm:"column(userid)"`
+	WareID  uint64    `orm:"column(wareid)" json:"ware_id"`
 	Number  int8      `orm:"column(number)" json:"number"`
 	Created time.Time `orm:"column(created);auto_now_add;type(datetime)" json:"created"`
 }

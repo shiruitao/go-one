@@ -18,6 +18,9 @@ func init() {
 	beego.Router("/shop/ware/status", &controllers.WareController{}, "post:StatusWare")
 
 	// Cart
+	beego.Router("/shop/cart/add", &controllers.CartController{}, "post:AddCart")
+	beego.Router("/shop/cart/number", &controllers.CartController{}, "post:ModifyNum")
+	beego.Router("/shop/cart/delete", &controllers.CartController{}, "post:DeleteCart")
 
 	// Order
 

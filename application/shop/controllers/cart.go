@@ -39,19 +39,19 @@ import (
 	"github.com/shiruitao/go-one/application/shop/common"
 )
 
-type CareController struct {
+type CartController struct {
 	beego.Controller
 }
 
-func (this *CareController) AddCart() {
+func (this *CartController) AddCart() {
 	var cart models.Cart
 
 	userID := this.GetSession(common.SessionUserID).(uint32)
 
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &cart)
 	if err != nil {
-		log.Println("You don't have access")
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSession}
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
 		cart.UserID = userID
 		_, err = models.CartService.AddCart(&cart)
@@ -65,7 +65,7 @@ func (this *CareController) AddCart() {
 	this.ServeJSON()
 }
 
-func (this *CareController) ModifyNum() {
+func (this *CartController) ModifyNum() {
 	var num struct {
 		ID uint64 `json:"id"`
 		Number int8 `json:"number"`
@@ -73,8 +73,8 @@ func (this *CareController) ModifyNum() {
 
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &num)
 	if err != nil {
-		log.Println("You don't have access")
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSession}
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
 		_, err = models.CartService.ModifyNum(num.ID, num.Number)
 		if err != nil {
@@ -87,15 +87,15 @@ func (this *CareController) ModifyNum() {
 	this.ServeJSON()
 }
 
-func (this *CareController) DeleteCart() {
+func (this *CartController) DeleteCart() {
 	var id struct {
 		ID uint64 `json:"id"`
 	}
 
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
 	if err != nil {
-		log.Println("You don't have access")
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSession}
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
 		_, err := models.CartService.DeleteWare(id.ID)
 		if err != nil {
