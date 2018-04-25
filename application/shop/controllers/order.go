@@ -28,3 +28,38 @@
  */
 
 package controllers
+
+import (
+	"log"
+	"encoding/json"
+
+	"github.com/astaxie/beego"
+
+	"github.com/shiruitao/go-one/application/shop/models"
+	"github.com/shiruitao/go-one/application/shop/common"
+)
+
+type OrderController struct {
+	beego.Controller
+}
+
+func (this *OrderController) AddOrder() {
+	var order models.Order
+
+	userID := this.GetSession(common.SessionUserID).(uint32)
+
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &order)
+	if err != nil {
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		order.UserID = userID
+		_, err := models.OrderService.AddOrder(&order)
+		if err != nil {
+			log.Println("ErrMysql:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+}
