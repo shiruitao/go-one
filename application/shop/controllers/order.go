@@ -63,3 +63,21 @@ func (this *OrderController) AddOrder() {
 		}
 	}
 }
+
+func (this *OrderController) FinishOrder() {
+	var order models.Order
+
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &order)
+	if err != nil {
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		_, err := models.OrderService.FinishOrder(order.ID)
+		if err != nil {
+			log.Println("ErrMysql:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+}

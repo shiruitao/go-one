@@ -23,6 +23,8 @@ func init() {
 	beego.Router("/shop/cart/delete", &controllers.CartController{}, "post:DeleteCart")
 
 	// Order
+	beego.Router("/shop/order/add", &controllers.OrderController{}, "post:AddOrder")
+	beego.Router("/shop/order/finish", &controllers.OrderController{}, "post:FinishOrder")
 
 	// Address
 	beego.Router("/shop/address/add", &controllers.AddressController{}, "post:AddAddress")

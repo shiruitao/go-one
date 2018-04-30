@@ -71,6 +71,13 @@ func (this *OrderServiceProvider) AddOrder(info *Order) (int64, error) {
 	return o.Insert(&order)
 }
 
-func (this *OrderServiceProvider) FinishOrder() {
+func (this *OrderServiceProvider) FinishOrder(id uint64) (int64, error) {
+	o := orm.NewOrm()
 
+	order := Order{
+		ID: id,
+		Status: 2,
+	}
+
+	return o.Update(order, "status")
 }
