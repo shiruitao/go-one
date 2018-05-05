@@ -81,3 +81,14 @@ func (this *OrderServiceProvider) FinishOrder(id uint64) (int64, error) {
 
 	return o.Update(order, "status")
 }
+
+func (this *OrderServiceProvider) DeleteOrder(id uint64) (int64, error) {
+	o := orm.NewOrm()
+
+	order := Order{
+		ID: id,
+		Status: 3,
+	}
+
+	return o.Update(order, "status")
+}
