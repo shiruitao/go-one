@@ -62,6 +62,7 @@ func (this *OrderController) AddOrder() {
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
 		}
 	}
+	this.ServeJSON()
 }
 
 func (this *OrderController) FinishOrder() {
@@ -80,4 +81,26 @@ func (this *OrderController) FinishOrder() {
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
 		}
 	}
+	this.ServeJSON()
+}
+
+func (this *OrderController) DeleteOrder() {
+	var id struct{
+		ID uint64
+	}
+
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		_, err = models.OrderService.DeleteOrder(id.ID)
+		if err != nil {
+			log.Println("ErrMysql:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+	this.ServeJSON()
 }

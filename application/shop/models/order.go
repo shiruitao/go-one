@@ -47,6 +47,7 @@ type Order struct {
 	Name    string    `orm:"column(name)" json:"name"`
 	Address string    `orm:"column(address)" json:"address"`
 	Phone   string    `orm:"column(phone)" json:"phone"`
+	Finish  bool	  `orm:"column(finish)"`
 	Status  int8      `orm:"column(status)" json:"status"`
 	Created time.Time `orm:"column(created);auto_now_add;type(datetime)" json:"created"`
 }
