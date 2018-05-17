@@ -8,23 +8,14 @@
 package routers
 
 import (
-	"github.com/shiruitao/go-one/application/bbs/controllers"
-
 	"github.com/astaxie/beego"
+
+	"github.com/shiruitao/go-one/application/bbs/controllers"
 )
 
 func init() {
-	ns := beego.NewNamespace("/v1",
-		beego.NSNamespace("/object",
-			beego.NSInclude(
-				&controllers.ObjectController{},
-			),
-		),
-		beego.NSNamespace("/user",
-			beego.NSInclude(
-				&controllers.UserController{},
-			),
-		),
-	)
-	beego.AddNamespace(ns)
+	beego.Router("/bbs/user/register", &controllers.UserController{}, "post:RegisterUser")
+	beego.Router("/bbs/user/login", &controllers.UserController{}, "post:LoginUser")
+	beego.Router("/bbs/user/changepassword", &controllers.UserController{}, "post:ChangePassword")
+	beego.Router("/bbs/user/changeinfo", &controllers.UserController{}, "post:ChangeInfo")
 }
