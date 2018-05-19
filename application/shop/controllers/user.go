@@ -50,20 +50,16 @@ func (this *UserController) CreateUser() {
 	if err != nil {
 		log.Println(err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
-	}
-	id, isAdmin, err := models.UserService.CreateUser(&user)
-	if err != nil {
-		log.Println(err)
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
-	}
-
-	if err != nil {
-		log.Println("Error in getting token:", err)
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
+		id, isAdmin, err := models.UserService.CreateUser(&user)
+		if err != nil {
+			log.Println(err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		}
 		this.SetSession(common.SessionUserID, id)
 		this.SetSession(common.SessionIsAdmin, isAdmin)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
 	}
+
 	this.ServeJSON()
 }

@@ -126,4 +126,5 @@ func (this *AdminController) ChangePass() {
 			}
 		}
 	}
+	this.ServeJSON()
 }

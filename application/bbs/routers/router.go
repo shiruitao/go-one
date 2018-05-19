@@ -14,8 +14,8 @@ import (
 )
 
 func init() {
-	beego.Router("/bbs/user/register", &controllers.UserController{}, "post:RegisterUser")
-	beego.Router("/bbs/user/login", &controllers.UserController{}, "post:LoginUser")
+	beego.Router("/bbs/user/register", &controllers.UserController{}, "post:CreateUser")
+	beego.Router("/bbs/user/login", &controllers.UserController{}, "post:Login")
 	beego.Router("/bbs/user/changepassword", &controllers.UserController{}, "post:ChangePassword")
-	beego.Router("/bbs/user/changeinfo", &controllers.UserController{}, "post:ChangeInfo")
+	//beego.Router("/bbs/user/changeinfo", &controllers.UserController{}, "post:ChangeInfo")
 }
