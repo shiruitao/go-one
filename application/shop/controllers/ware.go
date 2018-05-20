@@ -30,8 +30,8 @@
 package controllers
 
 import (
-	"log"
 	"encoding/json"
+	"log"
 
 	"github.com/astaxie/beego"
 

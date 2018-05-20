@@ -3,9 +3,9 @@ package initorm
 import (
 	"fmt"
 
-	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego"
-	_"github.com/go-sql-driver/mysql"
+	"github.com/astaxie/beego/orm"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func InitMysql() {

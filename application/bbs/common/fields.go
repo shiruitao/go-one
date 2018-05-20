@@ -2,7 +2,8 @@ package common
 
 const (
 	// Session
-	SessionIsAdmin = "isadmin"
-	SessionUser    = "username"
+	SessionIsAdmin  = "isadmin"
+	SessionUserID   = "userID"
+	SessionUserName = "username"
 	// Resp
 )

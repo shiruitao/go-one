@@ -8,9 +8,9 @@ import (
 
 func init() {
 	// User
-    beego.Router("/shop/user/login", &controllers.UserController{}, "post:CreateUser")
+	beego.Router("/shop/user/login", &controllers.UserController{}, "post:CreateUser")
 
-    // Ware
+	// Ware
 	beego.Router("/shop/ware/create", &controllers.WareController{}, "post:CreateWare")
 	beego.Router("/shop/ware/update", &controllers.WareController{}, "post:UpdateWare")
 	beego.Router("/shop/ware/getall", &controllers.WareController{}, "get:GetAll")

@@ -28,4 +28,3 @@ func main() {
 	initorm.InitMysql()
 	beego.Run()
 }
-

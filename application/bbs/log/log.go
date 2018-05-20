@@ -8,4 +8,3 @@ func init() {
 	Logger = logs.NewLogger()
 	Logger.SetLogger(logs.AdapterConsole)
 }
-

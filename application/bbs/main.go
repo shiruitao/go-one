@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/astaxie/beego"
 
+	"github.com/astaxie/beego/plugins/cors"
 	"github.com/shiruitao/go-one/application/bbs/initorm"
 	_ "github.com/shiruitao/go-one/application/bbs/routers"
-	"github.com/astaxie/beego/plugins/cors"
 )
 
 func main() {
@@ -23,6 +23,5 @@ func main() {
 	}))
 
 	initorm.InitMysql()
-	initorm.InitMongo()
 	beego.Run()
 }

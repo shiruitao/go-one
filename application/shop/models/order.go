@@ -47,7 +47,7 @@ type Order struct {
 	Name    string    `orm:"column(name)" json:"name"`
 	Address string    `orm:"column(address)" json:"address"`
 	Phone   string    `orm:"column(phone)" json:"phone"`
-	Finish  bool	  `orm:"column(finish)"`
+	Finish  bool      `orm:"column(finish)"`
 	Status  int8      `orm:"column(status)" json:"status"`
 	Created time.Time `orm:"column(created);auto_now_add;type(datetime)" json:"created"`
 }
@@ -60,13 +60,13 @@ func (this *OrderServiceProvider) AddOrder(info *Order) (int64, error) {
 	o := orm.NewOrm()
 
 	order := Order{
-		UserID: info.UserID,
-		WareID: info.WareID,
-		Number: info.Number,
-		Name: info.Name,
+		UserID:  info.UserID,
+		WareID:  info.WareID,
+		Number:  info.Number,
+		Name:    info.Name,
 		Address: info.Address,
-		Phone: info.Phone,
-		Status: 1,
+		Phone:   info.Phone,
+		Status:  1,
 	}
 
 	return o.Insert(&order)
@@ -76,7 +76,7 @@ func (this *OrderServiceProvider) FinishOrder(id uint64) (int64, error) {
 	o := orm.NewOrm()
 
 	order := Order{
-		ID: id,
+		ID:     id,
 		Status: 2,
 	}
 
@@ -87,7 +87,7 @@ func (this *OrderServiceProvider) DeleteOrder(id uint64) (int64, error) {
 	o := orm.NewOrm()
 
 	order := Order{
-		ID: id,
+		ID:     id,
 		Status: 3,
 	}
 

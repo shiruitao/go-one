@@ -5,8 +5,8 @@ import (
 	"github.com/astaxie/beego/orm"
 
 	"github.com/shiruitao/go-one/application/shi/initorm"
-	_ "github.com/shiruitao/go-one/application/shi/routers"
 	"github.com/shiruitao/go-one/application/shi/models"
+	_ "github.com/shiruitao/go-one/application/shi/routers"
 )
 
 //func init() {

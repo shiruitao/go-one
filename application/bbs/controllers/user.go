@@ -15,20 +15,14 @@ type UserController struct {
 }
 
 func (this *UserController) CreateUser() {
-	var user struct {
-		Name            string `json:"name"`
-		Nickname        string `json:"nickname"`
-		Password        string `json:"password"`
-		Avatar			string `json:"avatar"`
-		ConfirmPassword string `json:"confirm_password"`
-	}
+	var user models.UserInfo
 
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &user)
 	if err != nil {
 		log.Logger.Error("Errjson:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
-		_, err := models.UserService.CreateUser(user.Name, user.Nickname, user.Password, user.Avatar, user.ConfirmPassword)
+		_, err := models.UserService.CreateUser(&user)
 		if err != nil {
 			log.Logger.Error("ErrMysql", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
@@ -50,14 +44,15 @@ func (this *UserController) Login() {
 		log.Logger.Error("Errjson:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
-		isAdmin, _, err := models.UserService.Login(user.Name, user.Password)
+		user, _, err := models.UserService.Login(user.Name, user.Password)
 		if err != nil {
 			log.Logger.Error("ErrMysql", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 		} else {
-			this.SetSession(common.SessionUser, user.Name)
-			this.SetSession(common.SessionIsAdmin, isAdmin)
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, common.SessionUser: user.Name, common.SessionIsAdmin: isAdmin}
+			this.SetSession(common.SessionUserID, user.ID)
+			this.SetSession(common.SessionUserName, user.Name)
+			this.SetSession(common.SessionIsAdmin, user.IsAdmin)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "username": user.Name, common.SessionIsAdmin: user.IsAdmin, "avatar": user.Avatar}
 		}
 	}
 	this.ServeJSON()
@@ -73,7 +68,7 @@ func (this *UserController) ChangePassword() {
 		log.Logger.Error("json.Unmarshal:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
-		name := this.GetSession(common.SessionUser)
+		name := this.GetSession(common.SessionUserName)
 		_, flag, err := models.UserService.Login(name.(string), user.Oldpass)
 		if err != nil {
 			log.Logger.Error("Old Password:", err)
@@ -83,7 +78,8 @@ func (this *UserController) ChangePassword() {
 				log.Logger.Debug("Wrong Password!")
 				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrWrongPass}
 			} else {
-				err := models.UserService.ChangePassword(name.(string), user.Newpass)
+				id := this.GetSession(common.SessionUserID)
+				err := models.UserService.ChangePassword(id.(uint32), user.Newpass)
 				if err != nil {
 					log.Logger.Error("models.ChangePass:", err)
 					this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}

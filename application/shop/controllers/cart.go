@@ -30,13 +30,13 @@
 package controllers
 
 import (
-	"log"
 	"encoding/json"
+	"log"
 
 	"github.com/astaxie/beego"
 
-	"github.com/shiruitao/go-one/application/shop/models"
 	"github.com/shiruitao/go-one/application/shop/common"
+	"github.com/shiruitao/go-one/application/shop/models"
 )
 
 type CartController struct {
@@ -67,8 +67,8 @@ func (this *CartController) AddCart() {
 
 func (this *CartController) ModifyNum() {
 	var num struct {
-		ID uint64 `json:"id"`
-		Number int8 `json:"number"`
+		ID     uint64 `json:"id"`
+		Number int8   `json:"number"`
 	}
 
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &num)

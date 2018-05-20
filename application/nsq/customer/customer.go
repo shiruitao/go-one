@@ -70,7 +70,7 @@ func InitConsumer(topic string, channel string, address string) {
 	//	panic(err)
 	//}
 
-	 if err := c.ConnectToNSQD("127.0.0.1:4150"); err != nil {
-	  panic(err)
-	 }
+	if err := c.ConnectToNSQD("127.0.0.1:4150"); err != nil {
+		panic(err)
+	}
 }

@@ -32,6 +32,6 @@ package common
 const (
 	// Session
 	SessionIsAdmin = "isadmin"
-	SessionUserID    = "userid"
+	SessionUserID  = "userid"
 	// Resp
 )

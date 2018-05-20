@@ -161,11 +161,11 @@ func (this *Test) DeleteTest() {
 	if err != nil {
 		log.Logger.Error("json.Unmarshal:", err)
 	}
-		_, err = models.MessageService.DeleteTest(&Id.Id)
-		if err != nil {
-			log.Logger.Error("mysqlErr:", err)
-			this.Data["json"] = map[string]interface{}{"status": "ErrMysql"}
-		}
+	_, err = models.MessageService.DeleteTest(&Id.Id)
+	if err != nil {
+		log.Logger.Error("mysqlErr:", err)
+		this.Data["json"] = map[string]interface{}{"status": "ErrMysql"}
+	}
 	this.Data["json"] = map[string]interface{}{"status": "success"}
 	this.ServeJSON()
 }

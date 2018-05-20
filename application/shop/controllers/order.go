@@ -30,13 +30,13 @@
 package controllers
 
 import (
-	"log"
 	"encoding/json"
+	"log"
 
 	"github.com/astaxie/beego"
 
-	"github.com/shiruitao/go-one/application/shop/models"
 	"github.com/shiruitao/go-one/application/shop/common"
+	"github.com/shiruitao/go-one/application/shop/models"
 )
 
 type OrderController struct {
@@ -85,7 +85,7 @@ func (this *OrderController) FinishOrder() {
 }
 
 func (this *OrderController) DeleteOrder() {
-	var id struct{
+	var id struct {
 		ID uint64
 	}
 

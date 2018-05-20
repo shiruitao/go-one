@@ -68,5 +68,3 @@ func (this *UserServiceProvider) CreateUser(u *User) (uint32, bool, error) {
 	err = o.Read(&user)
 	return uint32(id), user.IsAdmin, err
 }
-
-

@@ -9,98 +9,98 @@ func init() {
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"],
 		beego.ControllerComments{
-			Method: "Post",
-			Router: `/`,
+			Method:           "Post",
+			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"],
 		beego.ControllerComments{
-			Method: "GetAll",
-			Router: `/`,
+			Method:           "GetAll",
+			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"],
 		beego.ControllerComments{
-			Method: "Get",
-			Router: `/:objectId`,
+			Method:           "Get",
+			Router:           `/:objectId`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"],
 		beego.ControllerComments{
-			Method: "Put",
-			Router: `/:objectId`,
+			Method:           "Put",
+			Router:           `/:objectId`,
 			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:ObjectController"],
 		beego.ControllerComments{
-			Method: "Delete",
-			Router: `/:objectId`,
+			Method:           "Delete",
+			Router:           `/:objectId`,
 			AllowHTTPMethods: []string{"delete"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Post",
-			Router: `/`,
+			Method:           "Post",
+			Router:           `/`,
 			AllowHTTPMethods: []string{"post"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "GetAll",
-			Router: `/`,
+			Method:           "GetAll",
+			Router:           `/`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Get",
-			Router: `/:uid`,
+			Method:           "Get",
+			Router:           `/:uid`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Put",
-			Router: `/:uid`,
+			Method:           "Put",
+			Router:           `/:uid`,
 			AllowHTTPMethods: []string{"put"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Delete",
-			Router: `/:uid`,
+			Method:           "Delete",
+			Router:           `/:uid`,
 			AllowHTTPMethods: []string{"delete"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Login",
-			Router: `/login`,
+			Method:           "Login",
+			Router:           `/login`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 	beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"] = append(beego.GlobalControllerRouter["github.com/shiruitao/go-one/application/bbs/controllers:UserController"],
 		beego.ControllerComments{
-			Method: "Logout",
-			Router: `/logout`,
+			Method:           "Logout",
+			Router:           `/logout`,
 			AllowHTTPMethods: []string{"get"},
-			MethodParams: param.Make(),
-			Params: nil})
+			MethodParams:     param.Make(),
+			Params:           nil})
 
 }
