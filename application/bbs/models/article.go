@@ -49,10 +49,8 @@ type (
 	Article struct {
 		Id       bson.ObjectId `bson:"_id,omitempty"`
 		Title    string        `bson:"title"`
-		Brief    string        `bson:"brief"`
 		Content  string        `bson:"content"`
 		AuthorID uint32        `bson:"authorID"`
-		VisitNum int64         `bson:"visitNum"`
 		Created  string        `bson:"created"`
 		Image1   string        `bson:"image1"`
 		Image2   string        `bson:"image2"`

@@ -8,6 +8,7 @@ import (
 	"github.com/shiruitao/go-one/application/bbs/common"
 	"github.com/shiruitao/go-one/application/bbs/log"
 	"github.com/shiruitao/go-one/application/bbs/models"
+	"fmt"
 )
 
 type UserController struct {
@@ -52,6 +53,7 @@ func (this *UserController) Login() {
 			this.SetSession(common.SessionUserID, user.ID)
 			this.SetSession(common.SessionUserName, user.Name)
 			this.SetSession(common.SessionIsAdmin, user.IsAdmin)
+			fmt.Println("uid: ", this.GetSession(common.SessionUserID),  this.GetSession(common.SessionUserID).(uint32))
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "username": user.Name, common.SessionIsAdmin: user.IsAdmin, "avatar": user.Avatar}
 		}
 	}
