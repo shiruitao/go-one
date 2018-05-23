@@ -14,9 +14,10 @@ import (
 )
 
 func init() {
-	beego.Router("/bbs/user/register", &controllers.UserController{}, "post:CreateUser")
-	beego.Router("/bbs/user/login", &controllers.UserController{}, "post:Login")
-	beego.Router("/bbs/user/changepassword", &controllers.UserController{}, "post:ChangePassword")
-	//beego.Router("/bbs/user/changeinfo", &controllers.UserController{}, "post:ChangeInfo")
-
+	beego.Router("/community/user/create", &controllers.UserController{}, "post:CreateUser")
+	beego.Router("/community/user/modify", &controllers.UserController{}, "post:UserUpdate")
+	beego.Router("/community/user/getuser", &controllers.UserController{}, "get:GetUser")
+	beego.Router("/community/user/getusername", &controllers.UserController{}, "post:GetUserByName")
+	beego.Router("/community/user/getuserarea", &controllers.UserController{}, "post:GetUserByArea")
+	beego.Router("/community/user/getuserage", &controllers.UserController{}, "post:GetUserByAge")
 }
