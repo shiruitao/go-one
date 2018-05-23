@@ -104,3 +104,14 @@ func (this *OrderController) DeleteOrder() {
 	}
 	this.ServeJSON()
 }
+
+func (this *OrderController) GetOrder() {
+	order, err := models.OrderService.GetOrder()
+	if err != nil {
+		log.Println("ErrMysql:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+	} else {
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "info": order}
+	}
+	this.ServeJSON()
+}

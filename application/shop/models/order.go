@@ -93,3 +93,13 @@ func (this *OrderServiceProvider) DeleteOrder(id uint64) (int64, error) {
 
 	return o.Update(order, "status")
 }
+
+func (this *OrderServiceProvider) GetOrder() (*[]Order, error) {
+	var (
+		order []Order
+	)
+
+	o := orm.NewOrm()
+	_, err := o.Raw("SELECT * FROM ware WHERE status IN (1,2) ORDER BY id DESC").QueryRows(&order)
+	return &order, err
+}
