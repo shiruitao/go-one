@@ -61,14 +61,18 @@ func (this *UserServiceProvider) GetUser() (*[]User, int64, error) {
 	return &user, num, err
 }
 
-func (this *UserServiceProvider) GetUserByAge(low, high int8) (*[]User, int64, error) {
+func (this *UserServiceProvider) GetUserByAge() (int64, int64, int64, int64, int64, error) {
 	var (
 		user []User
 	)
 	o := orm.NewOrm()
 	qs := o.QueryTable("user")
-	num, err := qs.Filter("age__gte", low).Filter("age__lte", high).All(&user)
-	return &user, num, err
+	num1, err := qs.Filter("age__gte", 0).Filter("age__lte", 7).All(&user)
+	num2, err := qs.Filter("age__gte", 7).Filter("age__lte", 17).All(&user)
+	num3, err := qs.Filter("age__gte", 18).Filter("age__lte", 40).All(&user)
+	num4, err := qs.Filter("age__gte", 41).Filter("age__lte", 65).All(&user)
+	num5, err := qs.Filter("age__gte", 66).All(&user)
+	return num1, num2, num3, num4, num5, err
 }
 
 func (this *UserServiceProvider) GetUserByName(name string) (*[]User, int64, error) {
@@ -82,13 +86,13 @@ func (this *UserServiceProvider) GetUserByName(name string) (*[]User, int64, err
 	return &user, num, err
 }
 
-func (this *UserServiceProvider) GetUserByArea(name string) (*[]User, int64, error) {
+func (this *UserServiceProvider) GetUserByArea(area string) (*[]User, int64, error) {
 	var (
 		user []User
 	)
 	o := orm.NewOrm()
 
-	num, err := o.Raw("SELECT * FROM user WHERE area = ?", name).QueryRows(&user)
+	num, err := o.Raw("SELECT * FROM user WHERE area = ?", area).QueryRows(&user)
 	return &user, num, err
 }
 

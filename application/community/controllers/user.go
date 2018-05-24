@@ -116,12 +116,12 @@ func (this *UserController) GetUserByAge() {
 		log.Logger.Error("Errjson:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
-		user, num, err := models.UserService.GetUserByAge(age.Low, age.High)
+		num1, num2, num3, num4, num5, err := models.UserService.GetUserByAge()
 		if err != nil {
 			log.Logger.Error("ErrMysql", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 		} else {
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "number": num, "info": user}
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "number1": num1, "number2": num2, "number3": num3, "number4": num4, "number5": num5, }
 		}
 		this.ServeJSON()
 	}
