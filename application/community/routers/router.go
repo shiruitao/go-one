@@ -7,6 +7,10 @@ import (
 )
 
 func init() {
+	// notice
+	beego.Router("/community/notice/create", &controllers.NoticeController{}, "post:Create")
+	beego.Router("/community/notice/get", &controllers.NoticeController{}, "post:GetAll")
+
 	// user
 	beego.Router("/community/user/create", &controllers.UserController{}, "post:CreateUser")
 	beego.Router("/community/user/modify", &controllers.UserController{}, "post:UserUpdate")
@@ -28,4 +32,18 @@ func init() {
 	beego.Router("/community/company/getall", &controllers.CompanyController{}, "get:GetCompanyAll")
 	beego.Router("/community/company/getbyarea", &controllers.CompanyController{}, "post:GetCompanyByArea")
 	beego.Router("/community/company/delete", &controllers.CompanyController{}, "post:DeleteCompany")
+
+	// region
+	beego.Router("/community/region/create", &controllers.RegionController{}, "post:CreateRegion")
+	beego.Router("/community/region/getall", &controllers.RegionController{}, "get:GetAll")
+	beego.Router("/community/region/getname", &controllers.RegionController{}, "post:GetRegion")
+	beego.Router("/community/region/modify", &controllers.RegionController{}, "post:UpdateRegion")
+	beego.Router("/community/region/delete", &controllers.RegionController{}, "post:DeleteRegion")
+
+	// house
+	beego.Router("/community/house/create", &controllers.HouseController{}, "post:CreateHouse")
+	beego.Router("/community/house/getall", &controllers.HouseController{}, "get:GetAll")
+	beego.Router("/community/house/getname", &controllers.HouseController{}, "post:GetHouseByName")
+	beego.Router("/community/house/modify", &controllers.HouseController{}, "post:UpdateHouse")
+	beego.Router("/community/house/delete", &controllers.HouseController{}, "post:DeleteHouse")
 }

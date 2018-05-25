@@ -15,10 +15,14 @@ type Company struct {
 	Name        string    `orm:"column(name)" json:"name"`
 	Type        string    `orm:"column(type)" json:"type"`
 	Capital     int       `orm:"column(capital)" json:"capital"`
-	ManageScope string    `orm:"column(managescope)" json:"manage_scope"`
+	ManageScope string    `orm:"column(managescope)" json:"scope"`
 	Address     string    `orm:"column(address)" json:"address"`
 	Area        string    `orm:"column(area)" json:"area"`
 	Created     time.Time `orm:"column(created);auto_now_add;type(datetime)"`
+}
+
+func init() {
+	orm.RegisterModel(new(Company))
 }
 
 func (*CompanyServiceProvider) Create(info *Company) error {
