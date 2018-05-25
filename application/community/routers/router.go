@@ -17,9 +17,11 @@ func init() {
 
 	// economic
 	beego.Router("/community/economic/get", &controllers.EconomicController{}, "post:GetEconomic")
+	beego.Router("/community/economic/add", &controllers.EconomicController{}, "post:CreateEconomic")
 
 	// industry
 	beego.Router("/community/industry/get", &controllers.IndustryController{}, "post:GetIndustry")
+	beego.Router("/community/industry/add", &controllers.IndustryController{}, "post:CreateIndustry")
 
 	// company
 	beego.Router("/community/company/create", &controllers.CompanyController{}, "post:CreateCompany")

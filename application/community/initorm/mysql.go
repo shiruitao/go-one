@@ -52,5 +52,5 @@ func InitMysql() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 
 	orm.RegisterDataBase("default", "mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", user, pass, host, port, db), maxIdle, maxConn)
-	orm.RegisterDataBase("community", "mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", user, pass, host, port, "community"), maxIdle, maxConn)
+	orm.RegisterDataBase("graduation", "mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8", user, pass, host, port, "graduation"), maxIdle, maxConn)
 }

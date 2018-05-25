@@ -13,6 +13,24 @@ type EconomicController struct {
 	beego.Controller
 }
 
+func (this *EconomicController) CreateEconomic() {
+	var e models.Economic
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &e)
+	if err != nil {
+		log.Logger.Error("Errjson:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		_, err = models.EconomicService.Create(&e)
+		if err != nil {
+			log.Logger.Error("ErrMysql", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+	this.ServeJSON()
+}
+
 func (this *EconomicController) GetEconomic() {
 	var area struct{
 		Area string `json:"area"`

@@ -18,6 +18,18 @@ type Economic struct {
 	Created time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 }
 
+func (*EconomicServiceProvider) Create(info *Economic) (int64, error) {
+	var (
+		e Economic
+	)
+	e.Year = info.Year
+	e.Area = info.Area
+	e.count = info.count
+
+	o := orm.NewOrm()
+	return o.Insert(&e)
+}
+
 func (*EconomicServiceProvider) Get(area string) (*Economic, int64, error) {
 	var (
 		economic Economic

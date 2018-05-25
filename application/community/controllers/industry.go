@@ -14,6 +14,24 @@ type IndustryController struct {
 	beego.Controller
 }
 
+func (this *IndustryController) CreateIndustry() {
+	var i models.Industry
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &i)
+	if err != nil {
+		log.Logger.Error("Errjson:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		_, err = models.IndustryService.Create(&i)
+		if err != nil {
+			log.Logger.Error("ErrMysql", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+	this.ServeJSON()
+}
+
 func (this *IndustryController) GetIndustry() {
 	var area struct{
 		Area string `json:"area"`
