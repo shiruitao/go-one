@@ -36,6 +36,6 @@ func (*NoticeServiceProvider) Get() (*[]Notice, error) {
 	var n []Notice
 
 	o := orm.NewOrm()
-	_, err := o.Raw("SELECT * FROM Notice").QueryRows(&n)
+	_, err := o.Raw("SELECT * FROM notice").QueryRows(&n)
 	return &n, err
 }

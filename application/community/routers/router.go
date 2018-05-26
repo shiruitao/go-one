@@ -9,7 +9,7 @@ import (
 func init() {
 	// notice
 	beego.Router("/community/notice/create", &controllers.NoticeController{}, "post:Create")
-	beego.Router("/community/notice/get", &controllers.NoticeController{}, "post:GetAll")
+	beego.Router("/community/notice/get", &controllers.NoticeController{}, "get:GetAll")
 
 	// user
 	beego.Router("/community/user/create", &controllers.UserController{}, "post:CreateUser")

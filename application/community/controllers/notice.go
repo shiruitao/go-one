@@ -5,8 +5,8 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"github.com/shiruitao/go-one/application/community/log"
 	"github.com/shiruitao/go-one/application/community/common"
+	"github.com/shiruitao/go-one/application/community/log"
 	"github.com/shiruitao/go-one/application/community/models"
 )
 
@@ -36,7 +36,7 @@ func (this *NoticeController) Create() {
 }
 
 func (this *NoticeController) GetAll() {
-	notice, err := models.HouseService.GetAll()
+	notice, err := models.NoticeService.Get()
 	if err != nil {
 		log.Logger.Error("ErrMysql", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
