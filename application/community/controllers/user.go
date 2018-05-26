@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
+	"io/ioutil"
+	"net/http"
 
 	"github.com/astaxie/beego"
 
@@ -106,24 +108,47 @@ func (this *UserController) GetUserByArea() {
 }
 
 func (this *UserController) GetUserByAge() {
-	var age struct {
-		Low int8 `json:"low"`
-		High int8 `json:"high"`
+	var area struct {
+		Area string `json:"area"`
 	}
 
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &age)
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &area)
 	if err != nil {
 		log.Logger.Error("Errjson:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
-	} else {
-		num1, num2, num3, num4, num5, err := models.UserService.GetUserByAge()
-		if err != nil {
-			log.Logger.Error("ErrMysql", err)
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
-		} else {
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "number1": num1, "number2": num2, "number3": num3, "number4": num4, "number5": num5, }
-		}
-		this.ServeJSON()
 	}
+	num1, num2, num3, num4, num5, err := models.UserService.GetUserByAge(area.Area)
+	if err != nil {
+		log.Logger.Error("ErrMysql", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+	} else {
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "number1": num1, "number2": num2, "number3": num3, "number4": num4, "number5": num5}
+	}
+	this.ServeJSON()
 }
 
+func (this *UserController) Weather() {
+	type (
+		b struct {
+			Date string `json:"date"`
+			High string `json:"high"`
+			Low  string `json:"low"`
+			Day string `json:"day"`
+			Text string `json:"text"`
+			Wind string `json:"wind"`
+		}
+		a struct {
+			Future []b `json:"future"`
+		}
+
+	)
+	var weather struct {
+		Weather []a    `json:"weather"`
+	}
+	resp, _ := http.Get("http://tj.nineton.cn/Heart/index/all?city=CHHE010000&language=zh-chs&unit=c&aqi=city&alarm=1&key=78928e706123c1a8f1766f062bc8676b")
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	json.Unmarshal(body, &weather)
+	this.Data["json"] =  weather
+	this.ServeJSON()
+}

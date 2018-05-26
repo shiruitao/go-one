@@ -14,7 +14,7 @@ type Company struct {
 	ID          uint32    `orm:"column(id);pk;auto"`
 	Name        string    `orm:"column(name)" json:"name"`
 	Type        string    `orm:"column(type)" json:"type"`
-	Capital     int       `orm:"column(capital)" json:"capital"`
+	Capital     int32     `orm:"column(Capital)" json:"capital"`
 	ManageScope string    `orm:"column(managescope)" json:"scope"`
 	Address     string    `orm:"column(address)" json:"address"`
 	Area        string    `orm:"column(area)" json:"area"`

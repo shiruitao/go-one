@@ -7,6 +7,9 @@ import (
 )
 
 func init() {
+	// weather
+	beego.Router("/community/weather", &controllers.UserController{}, "get:Weather")
+
 	// notice
 	beego.Router("/community/notice/create", &controllers.NoticeController{}, "post:Create")
 	beego.Router("/community/notice/get", &controllers.NoticeController{}, "get:GetAll")
