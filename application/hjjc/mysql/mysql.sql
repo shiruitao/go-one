@@ -1,18 +1,10 @@
-CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(32) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) NULL,
-  `password`  varchar(20) NOT NULL,
-  `realname` VARCHAR(20),
-  `userrole` VARCHAR(128) NOT NULL UNIQUE,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
 CREATE TABLE IF NOT EXISTS `company` (
   `id` int(32) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(20),
   `divisions`  varchar(128) NOT NULL,
-  `jd` VARCHAR(128) NOT NULL,
-  `wd` VARCHAR(128) NOT NULL,
+  `jd` decimal(10, 7) NOT NULL,
+  `wd` decimal(10, 7) NOT NULL,
+  `area` VARCHAR(256),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 

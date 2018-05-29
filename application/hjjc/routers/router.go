@@ -10,4 +10,6 @@ func init() {
 	beego.Router("/community/user/create", &controllers.UserController{}, "post:CreateUser")
 
 	beego.Router("/hjjc/device/get", &controllers.DeviceController{}, "post:Get")
+
+	beego.Router("/hjjc/company/get", &controllers.CompanyController{}, "post:Get")
 }
