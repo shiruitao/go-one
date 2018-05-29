@@ -4,25 +4,22 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
-
 )
 
 type UserServiceProvider struct{}
 
 var UserService *UserServiceProvider
 
-type (
-	User struct {
-		ID        uint32    `orm:"column(id);pk;auto"`
-		Name      string    `orm:"column(name)" json:"name"`
-		Sex       string    `orm:"column(sex)" json:"sex"`
-		Age       int8      `orm:"column(age)" json:"age"`
-		NumberID  string    `orm:"column(numberid)" json:"IDnumber"`
-		Area      string    `orm:"column(area)" json:"area"`
-		Address   string    `orm:"column(address)" json:"address"`
-		Created   time.Time `orm:"column(created);auto_now_add;type(datetime)"`
-	}
-)
+type User struct {
+	ID       uint32    `orm:"column(id);pk;auto"`
+	Name     string    `orm:"column(name)" json:"name"`
+	Sex      string    `orm:"column(sex)" json:"sex"`
+	Age      int8      `orm:"column(age)" json:"age"`
+	NumberID string    `orm:"column(numberid)" json:"IDnumber"`
+	Area     string    `orm:"column(area)" json:"area"`
+	Address  string    `orm:"column(address)" json:"address"`
+	Created  time.Time `orm:"column(created);auto_now_add;type(datetime)"`
+}
 
 func init() {
 	orm.RegisterModel(new(User))
