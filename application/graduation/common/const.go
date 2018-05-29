@@ -37,10 +37,12 @@ const (
 	// Student power
 	No int8 = 1
 
-	// Topic can be selected
-	CanSelect int8 = 1
-	// Topic has been selected
-	Selected int8 = 2
 	// Topic cannot be chosen
-	Affirm int8 = 3
+	Affirm int8 = 1
+	// Topic can be selected
+	CanSelect int8 = 2
+	// Topic has been selected
+	Selected int8 = 3
+	// Topic select finish
+	Finish int8 = 4
 )

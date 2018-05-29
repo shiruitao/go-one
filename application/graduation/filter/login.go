@@ -19,5 +19,9 @@ func LoginFilter(ctx *context.Context) {
 		if userName == nil {
 			ctx.Output.JSON(map[string]interface{}{common.RespKeyStatus: common.ErrPermission}, false, false)
 		}
+		userNum := ctx.Input.CruSession.Get(common.SessionUserNum)
+		if userNum == nil {
+			ctx.Output.JSON(map[string]interface{}{common.RespKeyStatus: common.ErrPermission}, false, false)
+		}
 	}
 }

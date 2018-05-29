@@ -123,12 +123,3 @@ func (this *UserServiceProvider) ChangePassword(id uint32, newPassword string) e
 	_, err = o.Update(&user, "password")
 	return err
 }
-
-func (*UserServiceProvider) GetUserByID(id uint32) *User {
-	user := User{ID: id}
-
-	o := orm.NewOrm()
-	o.Read(&user)
-
-	return &user
-}

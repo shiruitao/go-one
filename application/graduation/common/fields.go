@@ -5,5 +5,6 @@ const (
 	SessionPower  = "power"
 	SessionUserID   = "userID"
 	SessionUserName = "username"
+	SessionUserNum = "userNum"
 	// Resp
 )

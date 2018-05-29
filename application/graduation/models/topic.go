@@ -32,6 +32,7 @@ package models
 import (
 	"time"
 
+	"errors"
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/graduation/common"
 )
@@ -44,9 +45,10 @@ type Topic struct {
 	ID        uint32    `orm:"column(id);pk;auto"`
 	Name      string    `orm:"column(name)" json:"name"`
 	TeacherID uint32    `orm:"column(teacherid)" json:"teacher_id"`
-	Type      int8      `orm:"column(type)"`
-	StuName   string    `orm:"column(stuname)" json:"stu_name"`
-	StuNum    string    `orm:"column(stunum)" json:"stu_num"`
+	Type      int8      `orm:"column(type)" json:"type"` // 1 -> 教室发布,管理员未审核,学生无权浏览; 2 -> 管理审核通过,学生可选; 3 -> 学生选定,等待教室确认; 4 -> 教室确认,最终状态
+	StudentID uint32    `orm:"column(studentid)" json:"student_id"`
+	StuName   string    `orm:"column(studentname)" json:"stu_name"`
+	StuNum    string    `orm:"column(studentnum)" json:"stu_num"`
 	Created   time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 }
 
@@ -61,7 +63,7 @@ func (*TopicServiceProvider) Create(info *Topic) (int64, error) {
 
 	topic.Name = info.Name
 	topic.TeacherID = info.TeacherID
-	topic.Type = common.CanSelect
+	topic.Type = common.Affirm
 
 	o := orm.NewOrm()
 
@@ -72,33 +74,124 @@ func (*TopicServiceProvider) Select(id uint32, stuName string, stuNum string) (i
 	var (
 		topic Topic
 	)
-	topic = Topic{ID: id}
+	o := orm.NewOrm()
+
+	t := get(id, o)
+	if t.Type != common.CanSelect {
+		return 0, errors.New("No choice allowed!")
+	}
+
+	topic.ID = id
 	topic.Type = common.Selected
 	topic.StuName = stuName
 	topic.StuNum = stuNum
 
-	o := orm.NewOrm()
-
-	return o.Update(&topic, "type", "stuid", "stuname", "stunum")
+	return o.Update(&topic, "type", "stuname", "stunum")
 }
 
 func (*TopicServiceProvider) Bake(id uint32) (int64, error) {
 	var (
 		topic Topic
 	)
-	topic = Topic{ID: id}
-	topic.Type = common.CanSelect
-
 	o := orm.NewOrm()
-	return o.Update(&topic, "type")
+
+	t := get(id, o)
+	if t.Type == common.Finish {
+		return 0, errors.New("No choice allowed!")
+	}
+	topic.ID = id
+	topic.StuNum = ""
+	topic.StuName = ""
+	topic.StudentID = 0
+	topic.Type = common.CanSelect
+	return o.Update(&topic, "type", "studentid", "studentname", "studentnum")
 }
 
-func (*TopicServiceProvider) GetType(id uint32) int8 {
+func (*TopicServiceProvider) StudentGetTopic(user string) (*[]Topic, Topic, error) {
+	var (
+		topic       []Topic
+		topicSelect Topic
+	)
+
+	o := orm.NewOrm()
+
+	qs := o.QueryTable("topic")
+	qs.Filter("studentnum", user).One(&topicSelect)
+	_, err := qs.Exclude("type", common.Affirm).All(&topic)
+
+	return &topic, topicSelect, err
+}
+
+func (*TopicServiceProvider) TeacherGetTopic(id uint32) (*[]Topic, error) {
+	var (
+		topic []Topic
+	)
+
+	o := orm.NewOrm()
+	qs := o.QueryTable("topic")
+	_, err := qs.Filter("teacherid", id).All(&topic)
+	return &topic, err
+}
+
+func (*TopicServiceProvider) AdminGetTopic() (*[]Topic, error) {
+	var (
+		topic []Topic
+	)
+	o := orm.NewOrm()
+	err := o.Read(&topic)
+	return &topic, err
+}
+
+func (*TopicServiceProvider) AdminCheck(id uint32) error {
+	o := orm.NewOrm()
+	top := get(id, o)
+	if top.Type != 1 {
+		return errors.New("No choice allowed!")
+	}
+	topic := Topic{
+		ID:   id,
+		Type: common.CanSelect,
+	}
+
+	_, err := o.Update(&topic, "type")
+
+	return err
+}
+
+func (*TopicServiceProvider) TeacherModifyTopic(t *Topic) error {
 	var (
 		topic Topic
 	)
-	topic = Topic{ID: id}
 	o := orm.NewOrm()
+	top := get(t.ID, o)
+	if top.Type == common.Selected || top.Type == common.Finish {
+		return errors.New("No choice allowed!")
+	}
+	topic.ID = t.ID
+	topic.Name = t.Name
+	topic.Type = common.Affirm
+	_, err := o.Update(&topic, "name", "type")
+	return err
+}
+
+func (*TopicServiceProvider) TeacherVerify(id uint32) error {
+	o := orm.NewOrm()
+	t := get(id, o)
+	if t.Type != common.Selected {
+		return errors.New("No choice allowed!")
+	}
+
+	topic := Topic{
+		ID: id,
+		Type: common.Finish,
+	}
+
+	_, err := o.Update(&topic, "type")
+	return err
+}
+
+func get(id uint32, o orm.Ormer) Topic {
+	topic := Topic{ID: id}
 	o.Read(&topic)
-	return topic.Type
+	return topic
 }

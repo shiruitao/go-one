@@ -5,7 +5,6 @@ import (
 
 	"github.com/astaxie/beego"
 
-	"fmt"
 	"github.com/shiruitao/go-one/application/graduation/common"
 	"github.com/shiruitao/go-one/application/graduation/log"
 	"github.com/shiruitao/go-one/application/graduation/models"
@@ -33,9 +32,9 @@ func (this *UserController) Login() {
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 		} else {
 			this.SetSession(common.SessionUserName, user.Name)
+			this.SetSession(common.SessionUserNum, user.Number)
 			this.SetSession(common.SessionUserID, user.ID)
 			this.SetSession(common.SessionPower, user.Power)
-			fmt.Println("uid: ", this.GetSession(common.SessionUserID), this.GetSession(common.SessionUserID).(uint32))
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "username": user.Name, common.SessionPower: user.Power}
 		}
 	}
