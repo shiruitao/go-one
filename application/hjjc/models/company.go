@@ -20,12 +20,12 @@ func init() {
 	orm.RegisterModel(new(Company))
 }
 
-func (*CompanyServiceProvider) Get(info *Company) (*[]Company, error) {
+func (*CompanyServiceProvider) Get() ([]Company, error) {
 	var company []Company
 
 	o := orm.NewOrm()
 	qs := o.QueryTable("company")
-	_, err := qs.Filter("area", info.Area).Filter("name", info.Name).All(&company)
+	_, err := qs.All(&company)
 
-	return &company, err
+	return company, err
 }

@@ -15,12 +15,12 @@ type (
 		Name     string  `orm:"column(name)" json:"name"`
 		Device   string  `orm:"column(device)" json:"device"`
 		DataTime string  `orm:"column(datatime)" json:"data_time"`
-		Aa       float32 `orm:"column(Aa)" json:"aa""`
+		Aa       float32 `orm:"column(Aa)" json:"aa"`
 		Ab       float32 `orm:"column(Ab)" json:"ab"`
 		Ac       float32 `orm:"column(Ac)" json:"ac"`
-		va       float32 `orm:"column(Va)" json:"va"`
+		Va       float32 `orm:"column(Va)" json:"va"`
 		Vb       float32 `orm:"column(Vb)" json:"vb"`
-		vc       float32 `orm:"column(Vc)" json:"vc"`
+		Vc       float32 `orm:"column(Vc)" json:"vc"`
 		Wa       float32 `orm:"column(Wa)" json:"wa"`
 		Wb       float32 `orm:"column(Wb)" json:"wb"`
 		Wc       float32 `orm:"column(Wc)" json:"wc"`
