@@ -131,24 +131,22 @@ func (this *UserController) Weather() {
 	type (
 		b struct {
 			Date string `json:"date"`
-			High string `json:"high"`
-			Low  string `json:"low"`
-			Day string `json:"day"`
-			Text string `json:"text"`
-			Wind string `json:"wind"`
+			High string `json:"temp_day_c"`
+			Low  string `json:"temp_night_c"`
+			Day  string `json:"week"`
+			Text string `json:"weather"`
 		}
 		a struct {
-			Future []b `json:"future"`
+			Future []b `json:"weathers"`
 		}
-
 	)
 	var weather struct {
-		Weather []a    `json:"weather"`
+		Weather []a `json:"value"`
 	}
-	resp, _ := http.Get("http://tj.nineton.cn/Heart/index/all?city=CHHE010000&language=zh-chs&unit=c&aqi=city&alarm=1&key=78928e706123c1a8f1766f062bc8676b")
+	resp, _ := http.Get("http://aider.meizu.com/app/weather/listWeather?cityIds=101090201")
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	json.Unmarshal(body, &weather)
-	this.Data["json"] =  weather
+	this.Data["json"] = weather
 	this.ServeJSON()
 }

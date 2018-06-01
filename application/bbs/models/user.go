@@ -17,15 +17,15 @@ var UserService *UserServiceProvider
 type (
 	User struct {
 		ID        uint32    `orm:"column(id);pk;auto"`
-		Name      string    `orm:"column(name);not null;utf8_bin" json:"name"`
-		Nickname  string    `orm:"column(nickname);not null;utf8_bin" json:"nickname"`
-		Sex       string    `orm:"column(sex);not null;utf8_bin" json:"sex"`
-		RealName  string    `orm:"column(realname);not null;utf8_bin" json:"real_name"`
-		School    string    `orm:"column(school);not null;utf8_bin" json:"school"`
-		Password  string    `orm:"column(password)";type:varchar(128)" json:"password"`
+		Name      string    `orm:"column(name)" json:"name"`
+		Nickname  string    `orm:"column(nickname)" json:"nickname"`
+		Sex       string    `orm:"column(sex)" json:"sex"`
+		RealName  string    `orm:"column(realname)" json:"real_name"`
+		School    string    `orm:"column(school)" json:"school"`
+		Password  string    `orm:"column(password)" json:"password"`
 		Avatar    string    `orm:"column(avatar)" json:"avatar"`
 		IsAdmin   bool      `orm:"column(isadmin)" json:"is_admin"`
-		LastLogin time.Time `orm:"column(lastlogin);type(datetime)"`
+		LastLogin time.Time `orm:"column(lastlogin);"`
 		Created   time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 		Isactive  bool      `orm:"column(isactive)"`
 	}

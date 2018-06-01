@@ -22,6 +22,8 @@ func (this *TopicController) CreateTopic() {
 		log.Logger.Error("Errjson:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
+		userName := this.GetSession(common.SessionUserName).(string)
+		topic.TeacherName = userName
 		_, err := models.TopicService.Create(&topic)
 		if err != nil {
 			log.Logger.Error("ErrMysql", err)
@@ -31,10 +33,6 @@ func (this *TopicController) CreateTopic() {
 		}
 	}
 	this.ServeJSON()
-}
-
-func (this *TopicController) Get() {
-
 }
 
 func (this *TopicController) Select() {

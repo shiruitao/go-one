@@ -20,4 +20,5 @@ func init() {
 	//beego.Router("/bbs/user/changeinfo", &controllers.UserController{}, "post:ChangeInfo")
 
 	beego.Router("/bbs/art/add", &controllers.ArticleController{}, "post:ArticleCreate")
+	beego.Router("/bbs/art/get", &controllers.ArticleController{}, "post:Get")
 }

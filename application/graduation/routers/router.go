@@ -32,5 +32,5 @@ func init() {
 	//Student
 	beego.Router("/graduation/student/select", &controllers.TopicController{}, "post:Select")
 	beego.Router("/graduation/student/back", &controllers.TopicController{}, "post:Back")
-	beego.Router("/graduation/student/get", &controllers.TopicController{}, "post:StudentGetTopic")
+	beego.Router("/graduation/student/get", &controllers.TopicController{}, "get:StudentGetTopic")
 }

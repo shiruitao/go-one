@@ -43,8 +43,9 @@ var TopicService *TopicServiceProvider
 
 type Topic struct {
 	ID        uint32    `orm:"column(id);pk;auto"`
-	Name      string    `orm:"column(name)" json:"name"`
+	Name      string    `orm:"column(name)" json:"title"`
 	TeacherID uint32    `orm:"column(teacherid)" json:"teacher_id"`
+	TeacherName string  `orm:"column(teachername)" json:"teacher_name"`
 	Type      int8      `orm:"column(type)" json:"type"` // 1 -> 教室发布,管理员未审核,学生无权浏览; 2 -> 管理审核通过,学生可选; 3 -> 学生选定,等待教室确认; 4 -> 教室确认,最终状态
 	StudentID uint32    `orm:"column(studentid)" json:"student_id"`
 	StuName   string    `orm:"column(studentname)" json:"stu_name"`
@@ -64,6 +65,7 @@ func (*TopicServiceProvider) Create(info *Topic) (int64, error) {
 	topic.Name = info.Name
 	topic.TeacherID = info.TeacherID
 	topic.Type = common.Affirm
+	topic.TeacherName = info.TeacherName
 
 	o := orm.NewOrm()
 

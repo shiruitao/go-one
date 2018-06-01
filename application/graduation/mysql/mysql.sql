@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `title` (
   `id` INT(64) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(256) NOT NULL,
   `teacherid` int(64),
+  `teachername` VARCHAR(128),
   `studentid` int(64) DEFAULT 0,
   `studentnum` VARCHAR(128) DEFAULT '',
   `studentname`VARCHAR(128) DEFAULT '',

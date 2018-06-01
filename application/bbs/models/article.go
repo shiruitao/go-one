@@ -32,10 +32,7 @@ package models
 import (
 	"time"
 
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
-
-	"github.com/shiruitao/go-one/application/bbs/initorm"
+	"github.com/astaxie/beego/orm"
 )
 
 type ArticleServiceProvider struct{}
@@ -45,52 +42,50 @@ var (
 )
 
 type (
-	// Article represents the article information.
 	Article struct {
-		Id       bson.ObjectId `bson:"_id,omitempty"`
-		Title    string        `bson:"title"`
-		Content  string        `bson:"content"`
-		AuthorID uint32        `bson:"authorID"`
-		Created  string        `bson:"created"`
-		Image1   string        `bson:"image1"`
-		Image2   string        `bson:"image2"`
-		Image3   string        `bson:"image3"`
-		Video    string        `bson:"video"`
-		Active   bool          `bson:"active"`
-	}
-	Connection struct {
-		session    *mgo.Session
-		collection *mgo.Collection
-		Database   string
-		Name       string
+		ID       uint32    `orm:"column(id);pk;auto"`
+		Title    string    `orm:"column(title)" json:"title"`
+		Content  string    `orm:"column(content)" json:"content"`
+		AuthorID uint32    `orm:"column(Authorid)"`
+		Image1   string    `orm:"column(image1)" json:"image1"`
+		Image2   string    `orm:"column(image2)" json:"image2"`
+		Image3   string    `orm:"column(image3)" json:"image3"`
+		Video    string    `orm:"column(video)" json:"video"`
+		IsActive bool      `orm:"column(isactive)"`
+		Created  time.Time `orm:"column(created)"`
 	}
 )
 
-func CollectionArticle() initorm.Mongodb {
-	m := initorm.ConnectMongo("article")
-	m.C.EnsureIndex(mgo.Index{
-		Key:        []string{"Title"},
-		Unique:     false,
-		DropDups:   true,
-		Background: true,
-		Sparse:     true,
-	})
-	return m
+func init() {
+	orm.RegisterModel(new(Article))
 }
 
-func (this *ArticleServiceProvider) New(a *Article) (string, error) {
-	m := CollectionArticle()
-	defer m.S.Close()
+func (*ArticleServiceProvider) New(info *Article) error {
+	var (
+		article Article
+	)
+	article.Title = info.Title
+	article.Content = info.Content
+	article.AuthorID = info.AuthorID
+	article.Image1 = info.Image1
+	article.Image2 = info.Image2
+	article.Image3 = info.Image3
+	article.Video = info.Video
+	article.IsActive = true
 
-	// 生成 ObjectId
-	a.Id = bson.NewObjectId()
+	o := orm.NewOrm()
+	_, err := o.Insert(&article)
 
-	a.Created = time.Now().Format("2006-01-02 15:04:05")
-	a.Active = true
-	err := m.C.Insert(a)
-	if err != nil {
-		return "", err
-	}
+	return err
+}
 
-	return a.Id.Hex(), nil
+func (*ArticleServiceProvider) Get() (*[]Article, error) {
+	var (
+		article []Article
+	)
+
+	o := orm.NewOrm()
+	_, err := o.Raw("SELECT * FROM article").QueryRows(&article)
+
+	return &article, err
 }
