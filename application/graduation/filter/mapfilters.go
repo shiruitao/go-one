@@ -4,9 +4,9 @@ var MapFilter map[string]interface{}
 
 func init() {
 	MapFilter = make(map[string]interface{})
-	MapFilter["/bbs/user/register"] = struct{}{}
-	MapFilter["/bbs/user/login"] = struct{}{}
-	MapFilter["/shop/ware/getall"] = struct{}{}
-	MapFilter["/shop/ware/recommend"] = struct{}{}
-	MapFilter["/readTime"] = struct{}{}
+	MapFilter["/health/user/login"] = struct{}{}
+	MapFilter["/graduation/student/get"] = struct{}{}
+	//MapFilter["/shop/ware/getall"] = struct{}{}
+	//MapFilter["/shop/ware/recommend"] = struct{}{}
+	//MapFilter["/readTime"] = struct{}{}
 }
