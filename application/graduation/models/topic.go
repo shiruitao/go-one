@@ -42,19 +42,19 @@ type TopicServiceProvider struct{}
 var TopicService *TopicServiceProvider
 
 type Topic struct {
-	ID        uint32    `orm:"column(id);pk;auto"`
-	Name      string    `orm:"column(name)" json:"title"`
-	TeacherID uint32    `orm:"column(teacherid)" json:"teacher_id"`
-	TeacherName string  `orm:"column(teachername)" json:"teacher_name"`
-	Type      int8      `orm:"column(type)" json:"type"` // 1 -> 教室发布,管理员未审核,学生无权浏览; 2 -> 管理审核通过,学生可选; 3 -> 学生选定,等待教室确认; 4 -> 教室确认,最终状态
-	StudentID uint32    `orm:"column(studentid)" json:"student_id"`
-	StuName   string    `orm:"column(studentname)" json:"stu_name"`
-	StuNum    string    `orm:"column(studentnum)" json:"stu_num"`
-	Created   time.Time `orm:"column(created);auto_now_add;type(datetime)"`
+	ID          uint32    `orm:"column(id);pk;auto"`
+	Name        string    `orm:"column(name)" json:"title"`
+	TeacherID   uint32    `orm:"column(teacherid)" json:"teacher_id"`
+	TeacherName string    `orm:"column(teachername)" json:"teacher_name"`
+	Type        int8      `orm:"column(type)" json:"type"` // 1 -> 教室发布,管理员未审核,学生无权浏览; 2 -> 管理审核通过,学生可选; 3 -> 学生选定,等待教室确认; 4 -> 教室确认,最终状态
+	StudentID   uint32    `orm:"column(studentid)"`
+	StuName     string    `orm:"column(studentname)"`
+	StuNum      string    `orm:"column(studentnum)"`
+	Created     time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 }
 
 func init() {
-	orm.RegisterModel(new(User))
+	orm.RegisterModel(new(Topic))
 }
 
 func (*TopicServiceProvider) Create(info *Topic) (int64, error) {
@@ -64,7 +64,7 @@ func (*TopicServiceProvider) Create(info *Topic) (int64, error) {
 
 	topic.Name = info.Name
 	topic.TeacherID = info.TeacherID
-	topic.Type = common.Affirm
+	topic.Type = common.CanSelect
 	topic.TeacherName = info.TeacherName
 
 	o := orm.NewOrm()
@@ -72,7 +72,7 @@ func (*TopicServiceProvider) Create(info *Topic) (int64, error) {
 	return o.Insert(&topic)
 }
 
-func (*TopicServiceProvider) Select(id uint32, stuName string, stuNum string) (int64, error) {
+func (*TopicServiceProvider) Select(id, userID uint32, stuName string, stuNum string) (int64, error) {
 	var (
 		topic Topic
 	)
@@ -85,10 +85,18 @@ func (*TopicServiceProvider) Select(id uint32, stuName string, stuNum string) (i
 
 	topic.ID = id
 	topic.Type = common.Selected
+	topic.StudentID = userID
 	topic.StuName = stuName
 	topic.StuNum = stuNum
 
-	return o.Update(&topic, "type", "stuname", "stunum")
+	return o.Update(&topic, "studentid","type", "stuname", "stunum")
+}
+
+func (*TopicServiceProvider) Duplicate(userID uint32) (int64, error) {
+	o := orm.NewOrm()
+	qs := o.QueryTable("topic")
+	cnt, err := qs.Filter("studentid", userID).Count()
+	return cnt, err
 }
 
 func (*TopicServiceProvider) Bake(id uint32) (int64, error) {
@@ -184,7 +192,7 @@ func (*TopicServiceProvider) TeacherVerify(id uint32) error {
 	}
 
 	topic := Topic{
-		ID: id,
+		ID:   id,
 		Type: common.Finish,
 	}
 

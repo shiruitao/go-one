@@ -32,9 +32,9 @@ type (
 	}
 )
 
-//func init() {
-//	orm.RegisterModel(new(User))
-//}
+func init() {
+	orm.RegisterModel(new(User))
+}
 
 func (this *UserServiceProvider) CreateUser(info *User) (int64, error) {
 	var (
