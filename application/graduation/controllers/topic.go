@@ -17,19 +17,27 @@ type TopicController struct {
 func (this *TopicController) CreateTopic() {
 	var topic models.Topic
 
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &topic)
-	if err != nil {
-		log.Logger.Error("Errjson:", err)
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	power := this.GetSession(common.SessionPower).(int8)
+	if power != 2 {
+		log.Logger.Error("Have no legal power")
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrPermission}
 	} else {
-		userName := this.GetSession(common.SessionUserName).(string)
-		topic.TeacherName = userName
-		_, err := models.TopicService.Create(&topic)
+		err := json.Unmarshal(this.Ctx.Input.RequestBody, &topic)
 		if err != nil {
-			log.Logger.Error("ErrMysql", err)
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+			log.Logger.Error("Errjson:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 		} else {
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+			userID := this.GetSession(common.SessionUserID).(uint32)
+			userName := this.GetSession(common.SessionUserName).(string)
+			topic.TeacherName = userName
+			topic.TeacherID = userID
+			_, err := models.TopicService.Create(&topic)
+			if err != nil {
+				log.Logger.Error("ErrMysql", err)
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+			} else {
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+			}
 		}
 	}
 	this.ServeJSON()
@@ -40,21 +48,32 @@ func (this *TopicController) Select() {
 		ID uint32 `json:"id"`
 	}
 
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
-	if err != nil {
-		log.Logger.Error("Errjson:", err)
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	userID := this.GetSession(common.SessionUserID).(uint32)
+
+	cnt, _ := models.TopicService.Duplicate(userID)
+	if cnt == 1 {
+		log.Logger.Error("Duplicate select")
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: "Duplicate select"}
 	} else {
-		userName := this.GetSession(common.SessionUserName).(string)
-		userNumber := this.GetSession(common.SessionUserNum).(string)
-		_, err := models.TopicService.Select(id.ID, userName, userNumber)
+		err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
 		if err != nil {
-			log.Logger.Error("ErrMysql", err)
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+			log.Logger.Error("Errjson:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 		} else {
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+			userName := this.GetSession(common.SessionUserName).(string)
+			userNumber := this.GetSession(common.SessionUserNum).(string)
+
+			_, err := models.TopicService.Select(id.ID, userID, userName, userNumber)
+			if err != nil {
+				log.Logger.Error("ErrMysql", err)
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+			} else {
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+			}
 		}
+
 	}
+
 	this.ServeJSON()
 }
 
@@ -81,7 +100,6 @@ func (this *TopicController) Back() {
 
 func (this *TopicController) StudentGetTopic() {
 	userNumber := this.GetSession(common.SessionUserNum).(string)
-
 	topic, topicSelect, err := models.TopicService.StudentGetTopic(userNumber)
 	if err != nil {
 		log.Logger.Error("ErrMysql", err)
@@ -117,7 +135,7 @@ func (this *TopicController) AdminGetTopic() {
 }
 
 func (this *TopicController) AdminCheck() {
-	var id struct{
+	var id struct {
 		ID uint32 `json:"id"`
 	}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
@@ -136,9 +154,10 @@ func (this *TopicController) AdminCheck() {
 	this.ServeJSON()
 }
 
-func (this *TopicController) TeacherVerify()  {
-	var id struct{
+func (this *TopicController) TeacherVerify() {
+	var id struct {
 		ID uint32 `json:"id"`
+		Type int8 `json:"tpye"`
 	}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
 	if err != nil {
