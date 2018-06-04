@@ -15,12 +15,12 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE IF NOT EXISTS `title` (
+CREATE TABLE IF NOT EXISTS `topic` (
   `id` INT(64) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(256) NOT NULL,
-  `teacherid` int(64),
+  `teacherid` INT(32) NOT NULL,
   `teachername` VARCHAR(128),
-  `studentid` int(64) DEFAULT 0,
+  `studentid` INT(32) DEFAULT NULL,
   `studentnum` VARCHAR(128) DEFAULT '',
   `studentname`VARCHAR(128) DEFAULT '',
   `type` int(8),
