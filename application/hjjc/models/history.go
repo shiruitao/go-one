@@ -9,9 +9,9 @@ type HistoryServiceProvider struct{}
 
 var HistoryService *HistoryServiceProvider
 
-type HistoryData struct {
+type Historydata struct {
 	ID           uint32    `orm:"column(id);pk;auto"`
-	DeviceID     string    `orm:"column(DviceID)" json:"deviceID"`
+	DeviceID     string    `orm:"column(DeviceID)" json:"deviceID"`
 	DataTimeHour time.Time `orm:"column(DataTimeHour)" json:"dataTimeHour"`
 	CurrentA     float32   `orm:"column(CurrentA)" json:"currentA"`
 	CurrentB     float32   `orm:"column(CurrentB)" json:"currentB"`
@@ -27,11 +27,11 @@ type HistoryData struct {
 }
 
 func init() {
-	orm.RegisterModel(new(HistoryData))
+	orm.RegisterModel(new(Historydata))
 }
 
-func (*HistoryServiceProvider) Get() ([]HistoryData, error) {
-	var historyData []HistoryData
+func (*HistoryServiceProvider) Get() ([]Historydata, error) {
+	var historyData []Historydata
 
 	o := orm.NewOrm()
 	qs := o.QueryTable("historydata")
