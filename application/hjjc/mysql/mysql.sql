@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `Userpwd`  varchar(128) NOT NULL,
   `RealName` varchar(128),
   `UserRole` VARCHAR(128),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`UserID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 CREATE TABLE IF NOT EXISTS `company` (
@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS `company` (
   `divisions`  varchar(128) NOT NULL,
   `jd` decimal(10, 7) NOT NULL,
   `wd` decimal(10, 7) NOT NULL,
-  `area` VARCHAR(256),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -56,8 +55,8 @@ CREATE TABLE IF NOT EXISTS `devices` (
 
 CREATE TABLE IF NOT EXISTS `historydata` (
   `id` int(32) unsigned NOT NULL AUTO_INCREMENT,
-  `DeviceID` INT(32)
-  `DataTimeHour`  varchar(128),
+  `DeviceID` INT(32),
+  `DataTimeHour` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `CurrentA` FLOAT(7,3),
   `CurrentB` FLOAT(7,3),
   `CurrentC` FLOAT(7,3),
@@ -66,8 +65,8 @@ CREATE TABLE IF NOT EXISTS `historydata` (
   `VoltC` FLOAT(7,3),
   `isAvailable` BOOLEAN DEFAULT TRUE,
   `isCalculate` BOOLEAN DEFAULT FALSE,
-  `EnergyA` DEFAULT NULL,
-  `EnergyB` DEFAULT NULL,
-  `EnergyC` DEFAULT NULL,
+  `EnergyA` FLOAT(7,3) DEFAULT NULL,
+  `EnergyB` FLOAT(7,3) DEFAULT NULL,
+  `EnergyC` FLOAT(7,3) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
