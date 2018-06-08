@@ -15,22 +15,29 @@ type TopicController struct {
 }
 
 func (this *TopicController) CreateTopic() {
-	var topic models.Topic
+	var (
+		topic models.Topic
+		title struct {
+			Name string `json:"name"`
+		}
+	)
 
 	power := this.GetSession(common.SessionPower).(int8)
 	if power != 2 {
 		log.Logger.Error("Have no legal power")
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrPermission}
 	} else {
-		err := json.Unmarshal(this.Ctx.Input.RequestBody, &topic)
+		err := json.Unmarshal(this.Ctx.Input.RequestBody, &title)
 		if err != nil {
 			log.Logger.Error("Errjson:", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 		} else {
 			userID := this.GetSession(common.SessionUserID).(uint32)
 			userName := this.GetSession(common.SessionUserName).(string)
+			topic.Name = title.Name
 			topic.TeacherName = userName
 			topic.TeacherID = userID
+			topic.StudentID = 0
 			_, err := models.TopicService.Create(&topic)
 			if err != nil {
 				log.Logger.Error("ErrMysql", err)
@@ -156,8 +163,8 @@ func (this *TopicController) AdminCheck() {
 
 func (this *TopicController) TeacherVerify() {
 	var id struct {
-		ID uint32 `json:"id"`
-		Type int8 `json:"tpye"`
+		ID   uint32 `json:"id"`
+		Type int8   `json:"tpye"`
 	}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
 	if err != nil {
