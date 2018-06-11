@@ -127,3 +127,12 @@ func (this *WareServiceProvider) StatusWare(id uint32, status int8) error {
 	_, err := o.Update(&ware, "status")
 	return err
 }
+
+func (*WareServiceProvider) GetByID(id []uint32) (Ware, error) {
+	var (
+		ware Ware
+	)
+	o := orm.NewOrm()
+	_, err := o.QueryTable("ware").Filter("id__in", id).All(&ware)
+	return ware, err
+}

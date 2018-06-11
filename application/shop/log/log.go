@@ -24,53 +24,16 @@
 
 /*
  * Revision History:
- *     Initial: 2018/05/30        Shi Ruitao
+ *     Initial: 2018/06/10        Shi Ruitao
  */
 
-package models
+package log
 
-import (
-	"github.com/astaxie/beego/orm"
-	"time"
-)
+import "github.com/astaxie/beego/logs"
 
-type CollectionServiceProvider struct{}
-
-var CollectionService CollectionServiceProvider
-
-type Collection struct {
-	ID       uint32    `orm:"column(id);pk;auto"`
-	UserID   uint32    `orm:"column(userid)"`
-	WareID   uint64    `orm:"column(wareid)" json:"ware_id"`
-	Created  time.Time `orm:"column(created);auto_now_add;type(datetime)"`
-}
+var Logger *logs.BeeLogger
 
 func init() {
-	orm.RegisterModel(new(Collection))
-}
-
-func (*CollectionServiceProvider) Add(info *Collection) (int64, error) {
-	var (
-		c Collection
-	)
-
-	c.UserID = info.UserID
-	c.WareID = info.WareID
-	o := orm.NewOrm()
-
-	return o.Insert(&c)
-}
-
-func (*CollectionServiceProvider) Delete(id uint32) (int64, error) {
-	c := Collection{ID: id}
-	return orm.NewOrm().Delete(&c)
-}
-
-func (*CollectionServiceProvider) Get(userID uint32) (*[]Collection, error) {
-	var c []Collection
-
-	o := orm.NewOrm()
-	qs := o.QueryTable("collection")
-	_, err := qs.Filter("userid", userID).All(&c)
-	return &c, err
+	Logger = logs.NewLogger()
+	Logger.SetLogger(logs.AdapterConsole)
 }

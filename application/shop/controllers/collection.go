@@ -28,3 +28,67 @@
  */
 
 package controllers
+
+import (
+	"encoding/json"
+	"github.com/astaxie/beego"
+	"github.com/shiruitao/go-one/application/shop/common"
+	"github.com/shiruitao/go-one/application/shop/models"
+	"log"
+)
+
+type CollectionController struct {
+	beego.Controller
+}
+
+func (this *CollectionController) Add() {
+	var collection models.Collection
+
+	userID := this.GetSession(common.SessionUserID).(uint32)
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &collection)
+	if err != nil {
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		collection.UserID = userID
+		_, err := models.CollectionService.Add(&collection)
+		if err != nil {
+			log.Println("ErrMysql:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+	this.ServeJSON()
+}
+
+func (this *CollectionController) Delete() {
+	var id struct {
+		ID uint32 `json:"id"`
+	}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		_, err := models.CollectionService.Delete(id.ID)
+		if err != nil {
+			log.Println("ErrMysql:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+	this.ServeJSON()
+}
+
+func (this *CollectionController) Get() {
+	userID := this.GetSession(common.SessionUserID).(uint32)
+	collection, err := models.CollectionService.Get(userID)
+	if err != nil {
+		log.Println("ErrMysql:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+	} else {
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "data": collection}
+	}
+}
