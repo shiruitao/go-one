@@ -17,8 +17,13 @@ func init() {
 	beego.Router("/bbs/user/register", &controllers.UserController{}, "post:CreateUser")
 	beego.Router("/bbs/user/login", &controllers.UserController{}, "post:Login")
 	beego.Router("/bbs/user/changepassword", &controllers.UserController{}, "post:ChangePassword")
-	//beego.Router("/bbs/user/changeinfo", &controllers.UserController{}, "post:ChangeInfo")
+	beego.Router("/bbs/user/get", &controllers.UserController{}, "post:Get")
+	beego.Router("/bbs/user/delete", &controllers.UserController{}, "post:Delete")
 
 	beego.Router("/bbs/art/add", &controllers.ArticleController{}, "post:ArticleCreate")
 	beego.Router("/bbs/art/get", &controllers.ArticleController{}, "get:Get")
+
+	beego.Router("/bbs/comment/addrep", &controllers.CommentController{}, "post:AddRep")
+	beego.Router("/bbs/comment/addcreator", &controllers.CommentController{}, "post:AddCreator")
+	beego.Router("/bbs/comment/get", &controllers.CommentController{}, "post:Get")
 }

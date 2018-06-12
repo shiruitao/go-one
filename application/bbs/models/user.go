@@ -117,7 +117,21 @@ func (this *UserServiceProvider) ChangePassword(id uint32, newPassword string) e
 	return err
 }
 
-//func (this *UserServiceProvider) ChangeInfo() error {
-//
-//	return
-//}
+func (this *UserServiceProvider) Get() (*[]User, error) {
+	var (
+		user []User
+	)
+
+	o := orm.NewOrm()
+	qs := o.QueryTable("user")
+	_, err := qs.All(&user)
+	return &user, err
+}
+
+func (this *UserServiceProvider) Delete(id uint32) (int64, error) {
+	user := User{ID:id}
+
+	o := orm.NewOrm()
+	user.Isactive = false
+	return o.Update(&user, "isactive")
+}

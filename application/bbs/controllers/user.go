@@ -91,3 +91,39 @@ func (this *UserController) ChangePassword() {
 	}
 	this.ServeJSON()
 }
+
+func (this *UserController) Get() {
+	user, err := models.UserService.Get()
+	if err != nil {
+		log.Logger.Error("Errsql:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+	} else {
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "data": user}
+	}
+	this.ServeJSON()
+}
+
+func (this *UserController) Delete() {
+	var id struct{
+		ID uint32 `json:"id"`
+	}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		log.Logger.Error("json.Unmarshal:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		isAdmin := this.GetSession(common.SessionIsAdmin).(bool)
+		if isAdmin {
+			_, err := models.UserService.Delete(id.ID)
+			if err != nil {
+				log.Logger.Error("Errsql:", err)
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+			} else {
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+			}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrPermission}
+		}
+	}
+	this.ServeJSON()
+}

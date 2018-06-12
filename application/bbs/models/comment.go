@@ -17,8 +17,10 @@ type Comment struct {
 	Creator   string    `orm:"column(creator)" json:"creator"`
 	RepliedID uint32    `orm:"column(repliedid)" json:"replied_id"`
 	Replied   string    `orm:"column(replied)" json:"replied"`
+	RepContent   string    `orm:"column(repcontent)" json:"rep_content"`
 	IsActive  bool      `orm:"column(isactive)"`
 	File      string    `orm:"column(file)" json:"file"`
+	RepFile      string    `orm:"column(repfile)" json:"rep_file"`
 	Created   time.Time `orm:"column(created)"`
 }
 
@@ -32,6 +34,8 @@ func (*CommentServiceProvider) Add(info *Comment) error {
 	c.Creator = info.Creator
 	c.RepliedID = info.RepliedID
 	c.Replied = info.Replied
+	c.RepContent = info.RepContent
+	c.RepFile = info.RepFile
 	c.IsActive = true
 	c.File = info.File
 
@@ -40,12 +44,12 @@ func (*CommentServiceProvider) Add(info *Comment) error {
 	return err
 }
 
-func (*CommentServiceProvider) Get(id uint32) (error, *Comment) {
+func (*CommentServiceProvider) Get(id uint32) (*Comment, error) {
 	var comment Comment
 	o := orm.NewOrm()
 	err := o.QueryTable("comment").Filter("artid", id).One(&comment)
 
-	return err, &comment
+	return &comment, err
 }
 
 func (*CommentServiceProvider) Delete(id uint32) (int64, error) {
