@@ -42,7 +42,7 @@ type TopicServiceProvider struct{}
 var TopicService *TopicServiceProvider
 
 type Topic struct {
-	ID          uint32    `orm:"column(id);pk;auto"`
+	ID          uint32    `orm:"column(id);pk;auto" json:"id"`
 	Name        string    `orm:"column(name)" json:"name"`
 	TeacherID   uint32    `orm:"column(teacherid)" json:"teacher_id"`
 	TeacherName string    `orm:"column(teachername)" json:"teacher_name"`
@@ -173,14 +173,14 @@ func (*TopicServiceProvider) TeacherModifyTopic(t *Topic) error {
 		topic Topic
 	)
 	o := orm.NewOrm()
-	top := get(t.ID, o)
-	if top.Type == common.Selected || top.Type == common.Finish {
-		return errors.New("No choice allowed!")
-	}
+	//top := get(t.ID, o)
+	//if top.Type == common.Selected || top.Type == common.Finish {
+	//	return errors.New("No choice allowed!")
+	//}
 	topic.ID = t.ID
 	topic.Name = t.Name
-	topic.Type = common.Affirm
-	_, err := o.Update(&topic, "name", "type")
+	//topic.Type = common.Affirm
+	_, err := o.Update(&topic, "name")
 	return err
 }
 
