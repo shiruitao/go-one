@@ -168,7 +168,7 @@ func (*TopicServiceProvider) AdminCheck(id uint32) error {
 	return err
 }
 
-func (*TopicServiceProvider) TeacherModifyTopic(t *Topic) error {
+func (*TopicServiceProvider) TeacherModifyTopic(id uint32, name string) error {
 	var (
 		topic Topic
 	)
@@ -177,8 +177,8 @@ func (*TopicServiceProvider) TeacherModifyTopic(t *Topic) error {
 	//if top.Type == common.Selected || top.Type == common.Finish {
 	//	return errors.New("No choice allowed!")
 	//}
-	topic.ID = t.ID
-	topic.Name = t.Name
+	topic.ID = id
+	topic.Name = name
 	//topic.Type = common.Affirm
 	_, err := o.Update(&topic, "name")
 	return err

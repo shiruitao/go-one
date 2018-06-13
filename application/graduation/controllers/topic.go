@@ -183,13 +183,16 @@ func (this *TopicController) TeacherVerify() {
 }
 
 func (this *TopicController) TeacherModifyTopic() {
-	var topic models.Topic
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &topic)
+	var t struct {
+		ID uint32 `json:"id"`
+		Name string `json:"name"`
+	}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &t)
 	if err != nil {
 		log.Logger.Error("Errjson:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
-		err := models.TopicService.TeacherModifyTopic(&topic)
+		err := models.TopicService.TeacherModifyTopic(t.ID, t.Name)
 		if err != nil {
 			log.Logger.Error("ErrMysql", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
