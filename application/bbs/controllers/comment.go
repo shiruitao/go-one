@@ -21,9 +21,11 @@ func (this *CommentController) AddRep()  {
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
 		userID := this.GetSession(common.SessionUserID).(uint32)
-		userName := this.GetSession(comment.Replied).(string)
+		userName := this.GetSession(common.SessionUserName).(string)
+		avatar := this.GetSession("avatar").(string)
 		comment.RepliedID = userID
 		comment.Replied = userName
+		comment.Avatar = avatar
 		err := models.CommentService.Add(&comment)
 		if err != nil {
 			log.Logger.Error("ErrMysql", err)
@@ -43,9 +45,11 @@ func (this *CommentController) AddCreator()  {
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
 		userID := this.GetSession(common.SessionUserID).(uint32)
-		userName := this.GetSession(comment.Replied).(string)
+		userName := this.GetSession(common.SessionUserName).(string)
+		avatar := this.GetSession("avatar").(string)
 		comment.CreatorID = userID
 		comment.Creator = userName
+		comment.Avatar = avatar
 		err := models.CommentService.Add(&comment)
 		if err != nil {
 			log.Logger.Error("ErrMysql", err)
@@ -66,11 +70,14 @@ func (this *CommentController) Get() {
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
 		c, err := models.CommentService.Get(id.ID)
+
+		userID := this.GetSession(common.SessionUserID).(uint32)
+		_, user := models.UserService.GetByID(userID)
 		if err != nil {
 			log.Logger.Error("ErrDB:", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 		} else {
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "data": c}
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "data": c, "avator": user}
 		}
 	}
 	this.ServeJSON()

@@ -52,7 +52,7 @@ type (
 		Image3   string    `orm:"column(image3)" json:"image3"`
 		Video    string    `orm:"column(video)" json:"video"`
 		IsActive bool      `orm:"column(isactive)"`
-		Created  time.Time `orm:"column(created)"`
+		Created  time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 	}
 )
 
@@ -88,4 +88,20 @@ func (*ArticleServiceProvider) Get() (*[]Article, error) {
 	_, err := o.Raw("SELECT * FROM article").QueryRows(&article)
 
 	return &article, err
+}
+
+func (*ArticleServiceProvider) DeleteArt(id uint32) error {
+	art := Article{ID: id}
+
+	o := orm.NewOrm()
+	_, err := o.Delete(&art)
+	return err
+}
+
+func (*ArticleServiceProvider) DeleteUser(id uint32) error {
+	user := User{ID: id}
+	user.Isactive = false
+	o := orm.NewOrm()
+	_, err := o.Update(&user, "IsActive")
+	return err
 }

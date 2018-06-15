@@ -124,7 +124,18 @@ func (this *UserServiceProvider) Get() (*[]User, error) {
 
 	o := orm.NewOrm()
 	qs := o.QueryTable("user")
-	_, err := qs.All(&user)
+	_, err := qs.Filter("isactive", true).All(&user)
+	return &user, err
+}
+
+func (this *UserServiceProvider) GetByID(id uint32) (*User, error) {
+	var (
+		user User
+	)
+
+	o := orm.NewOrm()
+	qs := o.QueryTable("user")
+	err := qs.Filter("id", id).One(&user)
 	return &user, err
 }
 

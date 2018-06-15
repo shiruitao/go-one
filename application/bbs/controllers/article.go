@@ -35,6 +35,45 @@ func (this *ArticleController) ArticleCreate() {
 	this.ServeJSON()
 }
 
+func (this *ArticleController) DeleteArt() {
+	var id struct {
+		ID uint32 `json:"id"`
+	}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		log.Logger.Error("Errjson:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		err := models.ArticleService.DeleteArt(id.ID)
+		if err != nil {
+			log.Logger.Error("ErrDB:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+}
+
+func (this *ArticleController) DeleteUser() {
+	var id struct {
+		ID uint32 `json:"id"`
+	}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		log.Logger.Error("Errjson:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		err := models.ArticleService.DeleteUser(id.ID)
+		if err != nil {
+			log.Logger.Error("ErrDB:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+
+}
+
 func (this *ArticleController) Get() {
 	article, err := models.ArticleService.Get()
 	if err != nil {

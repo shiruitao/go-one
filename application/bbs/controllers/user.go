@@ -49,9 +49,14 @@ func (this *UserController) Login() {
 			log.Logger.Error("ErrMysql", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 		} else {
+			if !user.Isactive {
+				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+				this.ServeJSON()
+			}
 			this.SetSession(common.SessionUserID, user.ID)
-			this.SetSession(common.SessionUserName, user.Name)
+			this.SetSession(common.SessionUserName, user.Nickname)
 			this.SetSession(common.SessionIsAdmin, user.IsAdmin)
+			this.SetSession("avatar", user.Avatar)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, "username": user.Name, common.SessionIsAdmin: user.IsAdmin, "avatar": user.Avatar}
 		}
 	}
