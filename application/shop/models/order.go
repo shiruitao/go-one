@@ -30,8 +30,6 @@
 package models
 
 import (
-	"time"
-
 	"github.com/astaxie/beego/orm"
 )
 
@@ -41,15 +39,13 @@ var OrderService OrderServiceProvider
 
 type Order struct {
 	ID      uint64    `orm:"column(id);pk;auto"`
-	UserID  uint32    `orm:"column(userid)"`
-	WareID  uint64    `orm:"column(wareid)" json:"ware_id"`
-	Number  int8      `orm:"column(number)" json:"number"`
+	Title   string	  `orm:"column(title)" json:"title"`
+	Number  int8      `orm:"column(num)" json:"num"`
 	Name    string    `orm:"column(name)" json:"name"`
+	Price    float32    `orm:"column(price)" json:"price"`
+	image   string  `orm:"column(image)" json:"image"`
 	Address string    `orm:"column(address)" json:"address"`
 	Phone   string    `orm:"column(phone)" json:"phone"`
-	Finish  bool      `orm:"column(finish)"`
-	Status  int8      `orm:"column(status)" json:"status"`
-	Created time.Time `orm:"column(created);auto_now_add;type(datetime)" json:"created"`
 }
 
 func init() {
@@ -60,13 +56,10 @@ func (this *OrderServiceProvider) AddOrder(info *Order) (int64, error) {
 	o := orm.NewOrm()
 
 	order := Order{
-		UserID:  info.UserID,
-		WareID:  info.WareID,
 		Number:  info.Number,
 		Name:    info.Name,
 		Address: info.Address,
 		Phone:   info.Phone,
-		Status:  1,
 	}
 
 	return o.Insert(&order)
@@ -77,7 +70,6 @@ func (this *OrderServiceProvider) FinishOrder(id uint64) (int64, error) {
 
 	order := Order{
 		ID:     id,
-		Status: 2,
 	}
 
 	return o.Update(order, "status")
@@ -88,10 +80,9 @@ func (this *OrderServiceProvider) DeleteOrder(id uint64) (int64, error) {
 
 	order := Order{
 		ID:     id,
-		Status: 3,
 	}
 
-	return o.Update(order, "status")
+	return o.Delete(&order)
 }
 
 func (this *OrderServiceProvider) GetOrder() (*[]Order, error) {
@@ -100,6 +91,6 @@ func (this *OrderServiceProvider) GetOrder() (*[]Order, error) {
 	)
 
 	o := orm.NewOrm()
-	_, err := o.Raw("SELECT * FROM ware WHERE status IN (1,2) ORDER BY id DESC").QueryRows(&order)
+	_, err := o.QueryTable("order").All(&order)
 	return &order, err
 }

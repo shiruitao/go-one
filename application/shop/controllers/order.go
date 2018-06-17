@@ -46,14 +46,12 @@ type OrderController struct {
 func (this *OrderController) AddOrder() {
 	var order models.Order
 
-	userID := this.GetSession(common.SessionUserID).(uint32)
 
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &order)
 	if err != nil {
 		log.Println("error json:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
-		order.UserID = userID
 		_, err := models.OrderService.AddOrder(&order)
 		if err != nil {
 			log.Println("ErrMysql:", err)
@@ -66,14 +64,15 @@ func (this *OrderController) AddOrder() {
 }
 
 func (this *OrderController) FinishOrder() {
-	var order models.Order
-
-	err := json.Unmarshal(this.Ctx.Input.RequestBody, &order)
+	var id struct{
+		ID uint64 `json:"id"`
+	}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
 	if err != nil {
 		log.Println("error json:", err)
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
-		_, err := models.OrderService.FinishOrder(order.ID)
+		_, err := models.OrderService.FinishOrder(id.ID)
 		if err != nil {
 			log.Println("ErrMysql:", err)
 			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
@@ -86,7 +85,7 @@ func (this *OrderController) FinishOrder() {
 
 func (this *OrderController) DeleteOrder() {
 	var id struct {
-		ID uint64
+		ID uint64 `json:"id"`
 	}
 
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)

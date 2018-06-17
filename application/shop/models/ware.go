@@ -30,8 +30,6 @@
 package models
 
 import (
-	"time"
-
 	"github.com/astaxie/beego/orm"
 )
 
@@ -39,80 +37,70 @@ type WareServiceProvider struct{}
 
 var WareService *WareServiceProvider
 
-type Ware struct {
+type Commodity struct {
 	ID        uint32    `orm:"column(id);pk;auto" json:"id"`
-	Name      string    `orm:"column(name)" json:"name"`
-	Desc      string    `orm:"column(desc)" json:"desc"`
+	Name      string    `orm:"column(title)" json:"name"`
+	Desc      string    `orm:"column(detail)" json:"desc"`
 	Price     float32   `orm:"column(price)" json:"price"`
-	SalePrice float32   `orm:"column(saleprice)" json:"sale_price"`
-	Inventory int32     `orm:"column(inventory)" json:"inventory"`
-	Category  string    `orm:"column(category)" json:"category"`
-	Avatar    string    `orm:"column(avatar)" json:"avatar"`
-	Image     string    `orm:"column(image)" json:"image"`
-	DetailPic string    `orm:"column(detailpic)" json:"detail_pic"`
-	Status    int8      `orm:"column(status)" json:"status"` // 0 -> hide; 1 -> normal; 2 -> recommend
-	Updated   time.Time `orm:"column(updated)" json:"updated"`
-	Created   time.Time `orm:"column(created);auto_now_add;type(datetime)" json:"created"`
+	Category  string    `orm:"column(class)" json:"category"`
+	Avatar    string    `orm:"column(image)" json:"avatar"`
 }
 
 func init() {
-	orm.RegisterModel(new(Ware))
+	orm.RegisterModel(new(Commodity))
 }
 
-func (this *WareServiceProvider) AddWare(info *Ware) (uint32, error) {
+func (this *WareServiceProvider) AddWare(info *Commodity) (uint32, error) {
 	var (
-		ware Ware
+		ware Commodity
 	)
 
 	ware.Name = info.Name
 	ware.Desc = info.Desc
 	ware.Price = info.Price
-	ware.SalePrice = info.SalePrice
-	ware.Inventory = info.Inventory
 	ware.Category = info.Category
-	ware.Status = info.Status
 	ware.Avatar = info.Avatar
-	ware.Image = info.Image
-	ware.DetailPic = info.DetailPic
 
 	o := orm.NewOrm()
 	id, err := o.Insert(&ware)
 	return uint32(id), err
 }
 
-func (this *WareServiceProvider) GetAll() (*[]Ware, int64, error) {
+func (this *WareServiceProvider) GetAll() (*[]Commodity, int64, error) {
 	var (
-		ware []Ware
+		ware []Commodity
 	)
 	o := orm.NewOrm()
-	num, err := o.Raw("SELECT * FROM ware WHERE status IN (1,2) ORDER BY id DESC").QueryRows(&ware)
+	num, err := o.Raw("SELECT * FROM commodity ORDER BY id DESC").QueryRows(&ware)
 	return &ware, num, err
 }
 
-func (this *WareServiceProvider) GetRecommend() (*[]Ware, int64, error) {
+func (this *WareServiceProvider) Delete(id uint32) error {
+	ware := Commodity{ID: id}
+
+	o := orm.NewOrm()
+	_, err := o.Delete(&ware)
+	return err
+}
+
+func (this *WareServiceProvider) GetRecommend() (*[]Commodity, int64, error) {
 	var (
-		ware []Ware
+		ware []Commodity
 	)
 	o := orm.NewOrm()
 	num, err := o.Raw("SELECT * FROM ware WHERE status = 2 ORDER BY id DESC").QueryRows(&ware)
 	return &ware, num, err
 }
 
-func (this *WareServiceProvider) UpdateWare(info *Ware) error {
+func (this *WareServiceProvider) UpdateWare(info *Commodity) error {
 	o := orm.NewOrm()
 
-	ware := Ware{ID: info.ID}
+	ware := Commodity{ID: info.ID}
 	ware.Name = info.Name
 	ware.Desc = info.Desc
 	ware.Price = info.Price
-	ware.SalePrice = info.SalePrice
-	ware.Inventory = info.Inventory
 	ware.Category = info.Category
-	ware.Status = info.Status
 	ware.Avatar = info.Avatar
-	ware.Image = info.Image
-	ware.DetailPic = info.DetailPic
-	ware.Updated = time.Now()
 
 	_, err := o.Update(&ware, "name", "desc", "price", "saleprice", "inventory", "category", "status", "avatar", "image", "detailpic", "updated")
 	return err
@@ -121,16 +109,15 @@ func (this *WareServiceProvider) UpdateWare(info *Ware) error {
 func (this *WareServiceProvider) StatusWare(id uint32, status int8) error {
 	o := orm.NewOrm()
 
-	ware := Ware{ID: id}
-	ware.Status = status
+	ware := Commodity{ID: id}
 
 	_, err := o.Update(&ware, "status")
 	return err
 }
 
-func (*WareServiceProvider) GetByID(id []uint32) (Ware, error) {
+func (*WareServiceProvider) GetByID(id []uint32) (Commodity, error) {
 	var (
-		ware Ware
+		ware Commodity
 	)
 	o := orm.NewOrm()
 	_, err := o.QueryTable("ware").Filter("id__in", id).All(&ware)

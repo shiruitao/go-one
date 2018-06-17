@@ -13,6 +13,7 @@ func init() {
 	// Ware
 	beego.Router("/shop/ware/create", &controllers.WareController{}, "post:CreateWare")
 	beego.Router("/shop/ware/update", &controllers.WareController{}, "post:UpdateWare")
+	beego.Router("/shop/ware/delete", &controllers.WareController{}, "post:Delete")
 	beego.Router("/shop/ware/getall", &controllers.WareController{}, "get:GetAll")
 	beego.Router("/shop/ware/recommend", &controllers.WareController{}, "get:GetRecommend")
 	beego.Router("/shop/ware/status", &controllers.WareController{}, "post:StatusWare")
@@ -26,7 +27,5 @@ func init() {
 	beego.Router("/shop/order/add", &controllers.OrderController{}, "post:AddOrder")
 	beego.Router("/shop/order/finish", &controllers.OrderController{}, "post:FinishOrder")
 	beego.Router("/shop/order/get", &controllers.OrderController{}, "post:GetOrder")
-
-	// Address
-	beego.Router("/shop/address/add", &controllers.AddressController{}, "post:AddAddress")
+	beego.Router("/shop/order/delete", &controllers.OrderController{}, "post:DeleteOrder")
 }

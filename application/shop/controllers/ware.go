@@ -44,27 +44,27 @@ type WareController struct {
 }
 
 func (this *WareController) CreateWare() {
-	var ware models.Ware
+	var ware models.Commodity
 
-	isAdmin := this.GetSession(common.SessionIsAdmin)
-	if isAdmin != true {
-		log.Println("You don't have access")
-		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSession}
+	//isAdmin := this.GetSession(common.SessionIsAdmin)
+	//if isAdmin != true {
+	//	log.Println("You don't have access")
+	//	this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSession}
+	//} else {
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &ware)
+	if err != nil {
+		log.Println("error json:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
 	} else {
-		err := json.Unmarshal(this.Ctx.Input.RequestBody, &ware)
+		_, err = models.WareService.AddWare(&ware)
 		if err != nil {
-			log.Println("error json:", err)
-			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+			log.Println("ErrMysql:", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
 		} else {
-			err = models.WareService.UpdateWare(&ware)
-			if err != nil {
-				log.Println("ErrMysql:", err)
-				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
-			} else {
-				this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
-			}
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
 		}
 	}
+	//}
 	this.ServeJSON()
 }
 
@@ -77,6 +77,20 @@ func (this *WareController) GetAll() {
 		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed, common.RespKeyData: ware, "number": num}
 	}
 	this.ServeJSON()
+}
+
+func (this *WareController) Delete() {
+	var id struct {
+		ID uint32 `json:"id"`
+	}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		log.Println("error json:", err)
+	}
+	err = models.WareService.Delete(id.ID)
+	if err != nil {
+		log.Println("ErrMysql:", err)
+	}
 }
 
 func (this *WareController) GetRecommend() {
@@ -92,7 +106,7 @@ func (this *WareController) GetRecommend() {
 
 func (this *WareController) UpdateWare() {
 	var (
-		ware models.Ware
+		ware models.Commodity
 	)
 
 	isAdmin := this.GetSession(common.SessionIsAdmin)

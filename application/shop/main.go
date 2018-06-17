@@ -4,7 +4,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 
-	"github.com/shiruitao/go-one/application/shop/filters"
+	//"github.com/shiruitao/go-one/application/shop/filters"
 	"github.com/shiruitao/go-one/application/shop/initorm"
 	_ "github.com/shiruitao/go-one/application/shop/routers"
 )
@@ -24,7 +24,7 @@ func main() {
 	}))
 
 	//检查用户是否登录
-	beego.InsertFilter("/*", beego.BeforeRouter, filters.LoginFilter)
+	//beego.InsertFilter("/*", beego.BeforeRouter, filters.LoginFilter)
 	initorm.InitMysql()
 	beego.Run()
 }
