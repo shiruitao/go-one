@@ -13,4 +13,6 @@ func init() {
 
 	beego.Router("/health/user/test", &controllers.TestController{}, "post:Get")
 
+	beego.Router("/health/question/add", &controllers.QuestionController{}, "post:Add")
+
 }

@@ -26,3 +26,18 @@ CREATE TABLE IF NOT EXISTS `record` (
   `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+CREATE TABLE IF NOT EXISTS `question` (
+  `id` INT(64) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `One` INT(8),
+  `Two` INT(8),
+  `Three` INT(8),
+  `Four` INT(8),
+  `Five` INT(8),
+  `Six` INT(8),
+  `Seven` INT(8),
+  `eight` INT(8),
+  `nine` INT(8),
+  `Ten` INT(8),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
