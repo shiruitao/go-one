@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"time"
 
 	"github.com/astaxie/beego/orm"
 
@@ -27,8 +26,6 @@ type (
 		Class      string    `orm:"column(class)" json:"class"`
 		Year       int32      `orm:"column(year)" json:"year"`
 		Power      int8      `orm:"column(power)"`
-		LastLogin  time.Time `orm:"column(lastlogin);type(datetime)"`
-		Created    time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 	}
 )
 
@@ -51,7 +48,6 @@ func (this *UserServiceProvider) CreateUser(info *User) (int64, error) {
 	user.Class = info.Class
 	user.Year = info.Year
 	user.Power = info.Power
-	user.LastLogin = time.Now()
 
 	if len(info.Password) < 6 || len(info.Password) > 30 {
 		err = errors.New(common.ErrWrongPass)
@@ -101,7 +97,6 @@ func (this *UserServiceProvider) Login(name, password string) (User, bool, error
 		return user, false, errors.New(common.ErrWrongPass)
 	}
 
-	user.LastLogin = time.Now()
 	_, err = o.Update(&user, "lastlogin")
 	return user, true, nil
 }

@@ -30,8 +30,6 @@
 package models
 
 import (
-	"time"
-
 	"errors"
 	"github.com/astaxie/beego/orm"
 	"github.com/shiruitao/go-one/application/graduation/common"
@@ -50,7 +48,6 @@ type Topic struct {
 	StudentID   uint32    `orm:"column(studentid)"`
 	StuName     string    `orm:"column(studentname)"`
 	StuNum      string    `orm:"column(studentnum)"`
-	Created     time.Time `orm:"column(created);auto_now_add;type(datetime)"`
 }
 
 func init() {
@@ -147,8 +144,8 @@ func (*TopicServiceProvider) AdminGetTopic() (*[]Topic, error) {
 	var (
 		topic []Topic
 	)
-	o := orm.NewOrm()
-	err := o.Read(&topic)
+	o := orm.NewOrm().QueryTable("topic")
+	_, err := o.Filter("type", 1).All(&topic)
 	return &topic, err
 }
 
@@ -167,6 +164,22 @@ func (*TopicServiceProvider) AdminCheck(id uint32) error {
 
 	return err
 }
+
+func (*TopicServiceProvider) AdminDelete(id uint32) error {
+	o := orm.NewOrm()
+	top := get(id, o)
+	if top.Type != 1 {
+		return errors.New("No choice allowed!")
+	}
+	topic := Topic{
+		ID:   id,
+	}
+
+	_, err := o.Delete(&topic)
+
+	return err
+}
+
 
 func (*TopicServiceProvider) TeacherModifyTopic(id uint32, name string) error {
 	var (
@@ -198,6 +211,30 @@ func (*TopicServiceProvider) TeacherVerify(id uint32) error {
 
 	_, err := o.Update(&topic, "type")
 	return err
+}
+
+func (*TopicServiceProvider) TeacherRefuse(id uint32) error {
+	o := orm.NewOrm()
+	t := get(id, o)
+	if t.Type != common.Selected {
+		return errors.New("No choice allowed!")
+	}
+
+	topic := Topic{
+		ID:   id,
+		Type: common.CanSelect,
+		StuName: "",
+		StudentID: 0,
+	}
+
+	_, err := o.Update(&topic, "type", "studentname", "studentid")
+	return err
+}
+
+func (*TopicServiceProvider) Delete(id uint32) {
+	o := orm.NewOrm()
+	t := Topic{ID: id}
+	o.Delete(&t)
 }
 
 func get(id uint32, o orm.Ormer) Topic {

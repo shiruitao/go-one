@@ -20,14 +20,17 @@ func init() {
 	// Admin
 	beego.Router("/graduation/admin/addinfo", &controllers.UserController{}, "post:CreateUserInfo")
 	beego.Router("/graduation/admin/modifyinfo", &controllers.UserController{}, "post:ModifyUserInfo")
-	beego.Router("/graduation/admin/gettopic", &controllers.TopicController{}, "post:AdminGetTopic")
+	beego.Router("/graduation/admin/gettopic", &controllers.TopicController{}, "get:AdminGetTopic")
 	beego.Router("/graduation/admin/check", &controllers.TopicController{}, "post:AdminCheck")
+	beego.Router("/graduation/admin/delete", &controllers.TopicController{}, "post:AdminDelete")
 
 	// Teacher
 	beego.Router("/graduation/teacher/add", &controllers.TopicController{}, "post:CreateTopic")
 	beego.Router("/graduation/teacher/get", &controllers.TopicController{}, "post:TeacherGetTopic")
 	beego.Router("/graduation/teacher/modify", &controllers.TopicController{}, "post:TeacherModifyTopic")
 	beego.Router("/graduation/teacher/verify", &controllers.TopicController{}, "post:TeacherVerify")
+	beego.Router("/graduation/teacher/delete", &controllers.TopicController{}, "post:Delete")
+	beego.Router("/graduation/teacher/refuse", &controllers.TopicController{}, "post:TeacherRefuse")
 
 	//Student
 	beego.Router("/graduation/student/select", &controllers.TopicController{}, "post:Select")

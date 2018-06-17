@@ -161,6 +161,26 @@ func (this *TopicController) AdminCheck() {
 	this.ServeJSON()
 }
 
+func (this *TopicController) AdminDelete() {
+	var id struct {
+		ID uint32 `json:"id"`
+	}
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		log.Logger.Error("Errjson:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		err := models.TopicService.AdminDelete(id.ID)
+		if err != nil {
+			log.Logger.Error("ErrMysql", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+	this.ServeJSON()
+}
+
 func (this *TopicController) TeacherVerify() {
 	var id struct {
 		ID   uint32 `json:"id"`
@@ -184,7 +204,7 @@ func (this *TopicController) TeacherVerify() {
 
 func (this *TopicController) TeacherModifyTopic() {
 	var t struct {
-		ID uint32 `json:"id"`
+		ID   uint32 `json:"id"`
 		Name string `json:"name"`
 	}
 	err := json.Unmarshal(this.Ctx.Input.RequestBody, &t)
@@ -201,4 +221,39 @@ func (this *TopicController) TeacherModifyTopic() {
 		}
 	}
 	this.ServeJSON()
+}
+
+func (this *TopicController) TeacherRefuse() {
+	var id struct {
+		ID uint32 `json:"id"`
+	}
+
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		log.Logger.Error("Errjson:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		err := models.TopicService.TeacherRefuse(id.ID)
+		if err != nil {
+			log.Logger.Error("ErrMysql", err)
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrMysqlQuery}
+		} else {
+			this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrSucceed}
+		}
+	}
+	this.ServeJSON()
+}
+
+func (this *TopicController) Delete() {
+	var id struct {
+		ID uint32 `json:"id"`
+	}
+
+	err := json.Unmarshal(this.Ctx.Input.RequestBody, &id)
+	if err != nil {
+		log.Logger.Error("Errjson:", err)
+		this.Data["json"] = map[string]interface{}{common.RespKeyStatus: common.ErrInvalidParam}
+	} else {
+		models.TopicService.Delete(id.ID)
+	}
 }
