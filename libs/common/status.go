@@ -40,6 +40,7 @@ const (
 
 	// ErrSession - Invalid Session
 	ErrSession = 420
+
 	// Resp
 	RespKeyStatus = "status"
 	RespKeyData   = "data"
