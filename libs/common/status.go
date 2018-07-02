@@ -30,6 +30,7 @@
 package common
 
 const (
+	// Error
 	ErrLoginRequired = 401 // 未登录
 	ErrPermission    = "NoPermission"
 	ErrSucceed       = "success"        // 成功
