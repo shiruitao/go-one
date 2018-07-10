@@ -40,7 +40,7 @@ const (
 	ErrMysqlQuery    = "mysql error"    // MySQL 错误
 
 	// ErrSession - Invalid Session
-	ErrSession = 420
+	//ErrSession = 420
 
 	// Resp
 	RespKeyStatus = "status"
