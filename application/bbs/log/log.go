@@ -7,4 +7,5 @@ var Logger *logs.BeeLogger
 func init() {
 	Logger = logs.NewLogger()
 	Logger.SetLogger(logs.AdapterConsole)
+	logs.EnableFuncCallDepth(true)
 }
